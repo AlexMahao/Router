@@ -1,4 +1,4 @@
-package com.spearbothy.router.api;
+package com.spearbothy.router.api.router;
 
 /**
  * Created by android-dev on 2018/4/18.
@@ -13,10 +13,20 @@ public class RouterResponse {
 
     private int code;
     private String desc;
+    private RouterRequest request;
 
-    public RouterResponse(int code, String desc) {
+    public RouterResponse(RouterRequest request, int code, String desc) {
+        this.request = request;
         this.code = code;
         this.desc = desc;
+    }
+
+    public RouterRequest getRequest() {
+        return request;
+    }
+
+    public void setRequest(RouterRequest request) {
+        this.request = request;
     }
 
     public int getCode() {
@@ -39,7 +49,8 @@ public class RouterResponse {
     public String toString() {
         return "RouterResponse{" +
                 "code=" + code +
-                ", desc=" + desc +
+                ", desc='" + desc + '\'' +
+                ", request=" + request +
                 '}';
     }
 }

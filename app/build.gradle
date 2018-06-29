@@ -12,7 +12,7 @@ android {
         // 声明唯一包名，用于确定辅助类生成位置
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [packageName: android.defaultConfig.applicationId]
+                arguments = [moduleName: 'app']
             }
         }
     }

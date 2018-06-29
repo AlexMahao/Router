@@ -1,6 +1,9 @@
-package com.spearbothy.router.api;
+package com.spearbothy.router.api.router;
 
 import android.content.Context;
+
+import com.spearbothy.router.api.ResultCallback;
+import com.spearbothy.router.api.util.Logger;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -8,10 +11,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 路由请求
- * 在这里处理数据，解析成对应实体
- * Created by android-dev on 2018/3/28.
+ * @author mahao
+ * @date 2018/6/27 下午3:19
+ * @email zziamahao@163.com
  */
+
 public class RouterRequest {
     private Context context;
     private String url;
@@ -21,7 +25,7 @@ public class RouterRequest {
     private Map<String, String> params = new HashMap<>();
     private ResultCallback callback;
 
-    RouterRequest(Context context) {
+    public RouterRequest(Context context) {
         this.context = context;
     }
 
@@ -34,43 +38,24 @@ public class RouterRequest {
         start(null);
     }
 
-
     public void start(ResultCallback resultCallback) {
         callback = resultCallback;
-        // 先进行数据解析
         try {
             URL url = new URL(getUrl());
             this.host = url.getHost();
             this.protocol = url.getProtocol();
             this.path = url.getPath();
             loadUrlParams(url.getQuery(), params);
-            // 跳转RouterManager进行处理
-            RouterManager.process(this);
+            Logger.info("url 解析结果：" + toString());
+
+            RouterClient.process(this);
         } catch (MalformedURLException e) {
-            RouterLog.error("协议不合法：" + getUrl(), e);
+            Logger.error("协议不合法：" + getUrl(), e);
             if (callback != null) {
-                callback.onError(new RouterResponse(RouterResponse.ERROR_PROTOCOL, "协议不合法"));
+                callback.onError(new RouterResponse(this, RouterResponse.ERROR_PROTOCOL, "协议不合法"));
             }
         }
     }
-/*
-
-    private boolean parserUrl(String url) {
-        // 匹配是否是url ，
-        if (!Util.isUrl(url)) {
-            RouterLog.error("协议不合法：" + getUrl());
-            if (callback != null) {
-                callback.onError(new RouterResponse(RouterResponse.ERROR_PROTOCOL, "协议不合法"));
-            }
-            return false;
-        }
-
-        // 解析数据
-
-
-    }
-*/
-
 
     private void loadUrlParams(String param, Map<String, String> map) {
         if (param == null) {
@@ -111,5 +96,16 @@ public class RouterRequest {
 
     public ResultCallback getCallback() {
         return callback;
+    }
+
+    @Override
+    public String toString() {
+        return "RouterRequest{" +
+                "url='" + url + '\'' +
+                ", protocol='" + protocol + '\'' +
+                ", host='" + host + '\'' +
+                ", path='" + path + '\'' +
+                ", params=" + params +
+                '}';
     }
 }

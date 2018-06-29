@@ -1,11 +1,11 @@
 package com.spearbothy.test;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-import com.spearbothy.router.annotation.Router;
+import com.spearbothy.router.annotation.Route;
 
-@Router(path = "/main")
+@Route(path = "/main")
 public class MainActivity extends AppCompatActivity {
 
     @Override

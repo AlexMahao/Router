@@ -11,7 +11,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [packageName: 'com.spearbothy.test']
+                arguments = [moduleName: 'test']
             }
         }
     }

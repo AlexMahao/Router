@@ -1,14 +1,16 @@
-package com.spearbothy.router;
+package com.spearbothy.router.entity;
 
 /**
- * Created by android-dev on 2018/4/3.
+ * Created by android-dev on 2018/6/26.
  */
 
-public class RouterEntity {
+public class RouteEntity {
+
     private Class clazz;
+
     private String desc;
 
-    public RouterEntity(Class clazz, String desc) {
+    public RouteEntity(Class clazz, String desc) {
         this.clazz = clazz;
         this.desc = desc;
     }
@@ -27,5 +29,13 @@ public class RouterEntity {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    @Override
+    public String toString() {
+        return "RouteEntity{" +
+                "clazz=" + clazz +
+                ", desc='" + desc + '\'' +
+                '}';
     }
 }

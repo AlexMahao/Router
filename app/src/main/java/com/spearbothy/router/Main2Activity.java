@@ -3,9 +3,9 @@ package com.spearbothy.router;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.spearbothy.router.annotation.Router;
+import com.spearbothy.router.annotation.Route;
 
-@Router(path = "/main2",desc = "第二个页面")
+@Route(path = "/main2",desc = "第二个页面")
 public class Main2Activity extends AppCompatActivity {
 
     @Override

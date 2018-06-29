@@ -5,37 +5,37 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import com.spearbothy.router.annotation.Router;
+import com.spearbothy.router.annotation.Route;
 import com.spearbothy.router.api.ResultCallback;
-import com.spearbothy.router.api.RouterClient;
-import com.spearbothy.router.api.RouterResponse;
+import com.spearbothy.router.api.Router;
+import com.spearbothy.router.api.router.RouterResponse;
 
-@Router(path = "/main", desc = "首页")
+@Route(path = "/main", desc = "首页")
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        RouterClient.init(getPackageName());
-        // 添加测试模块
-        RouterClient.addModule("com.spearbothy.test");
+        // 初始化module
+        Router.init(getApplicationContext());
+        Router.setDebug(BuildConfig.DEBUG);
     }
 
     public void go(View view) {
-        RouterClient.with(this)
-                .url("router://com.spearbothy.router/main2")
+        Router.with(this)
+                .url("router://app/main2")
                 .start();
     }
 
 
     public void goTest(View view) {
-        RouterClient.with(this)
-                .url("router://com.spearbothy.test/main")
+        Router.with(this)
+                .url("router://test/main")
                 .start(new ResultCallback() {
                     @Override
                     public void onSuccess() {
-
+                        Toast.makeText(getApplicationContext(), "页面跳转成功", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
