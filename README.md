@@ -6,13 +6,13 @@
 
 - 自动生成辅助类
 - 通过注解的形式声明`activity`的地址
-- 通过协议的方式对调用`activity`
+- 通过协议的方式调用`activity`
 - 不同module之间的页面跳转
-
 
 ### 版本列表
 
 - 0.0.1:实现最基础的页面跳转功能 （处于学习阶段，便于理解）
+- 0.0.2:重构项目
 
 ### TODO
 
@@ -45,12 +45,12 @@ android {
     ...
     defaultConfig {
         ...
-        // 声明唯一包名，用于确定辅助类生成位置
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [packageName: android.defaultConfig.applicationId]
-            }
-        }
+         // 声明唯一包名，用于确定辅助类生成位置
+                javaCompileOptions {
+                    annotationProcessorOptions {
+                        arguments = [moduleName: 'app']
+                    }
+                }
     }
    ...
 }
@@ -75,15 +75,25 @@ public class MainActivity extends AppCompatActivity {
 #### 页面跳转
 
 ```
-RouterClient.with(this)
-                .url("router://com.spearbothy.router/main2")
-                .start();
+ Router.with(this)
+                .url("router://test/main")
+                .start(new ResultCallback() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(getApplicationContext(), "页面跳转成功", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(RouterResponse response) {
+                        Toast.makeText(getApplicationContext(), response.getDesc(), Toast.LENGTH_SHORT).show();
+                    }
+                });
 ```
 
 #### 地址说明
 
 - `router`协议标识
-- `com.spearbothy.router`:包名，和greadle中声明的统一
+-  `test`:模块标识，和greadle中声明的统一
 - `/main2`：注解上声明的路径名
 
 
