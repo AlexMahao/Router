@@ -22,8 +22,8 @@ import dalvik.system.DexFile;
  * @author mahao
  * @date 2018/6/27 下午3:33
  * @email zziamahao@163.com
+ * @from ARouter
  */
-
 public class ClassUtils {
     private static final String EXTRACTED_NAME_EXT = ".classes";
     private static final String EXTRACTED_SUFFIX = ".zip";
@@ -51,7 +51,7 @@ public class ClassUtils {
         final Set<String> classNames = new HashSet<>();
 
         List<String> paths = getSourcePaths(context);
-
+        Logger.info("查找router loader 类目录："+paths);
         for (final String path : paths) {
             DexFile dexfile = null;
 
@@ -99,17 +99,18 @@ public class ClassUtils {
 
         List<String> sourcePaths = new ArrayList<>();
         sourcePaths.add(applicationInfo.sourceDir); //add the default apk path
-
+        Logger.info(applicationInfo.dataDir);
         //the prefix of extracted file, ie: test.classes
+        // com.xxx.xxx-1.apk.classes2.zip
         String extractedFilePrefix = sourceApk.getName() + EXTRACTED_NAME_EXT;
 
-//        如果VM已经支持了MultiDex，就不要去Secondary Folder加载 Classesx.zip了，那里已经么有了
-//        通过是否存在sp中的multidex.version是不准确的，因为从低版本升级上来的用户，是包含这个sp配置的
+
+        // 如果VM已经支持了multidex，vm >= 2.1，则不需要在找classesX.zip去加载，否则需要去加载额外的classesX.dex；
+        // Multidex框架会将classesX.dex从apk中抽取出来并保存到/data/data/package/code_cache/secondary-dexes,去这个里面查找
         if (!isVMMultidexCapable()) {
             //the total dex numbers
             int totalDexNumber = getMultiDexPreferences(context).getInt(KEY_DEX_NUMBER, 1);
             File dexDir = new File(applicationInfo.dataDir, SECONDARY_FOLDER_NAME);
-
             for (int secondaryNumber = 2; secondaryNumber <= totalDexNumber; secondaryNumber++) {
                 //for each dex file, ie: test.classes2.zip, test.classes3.zip...
                 String fileName = extractedFilePrefix + secondaryNumber + EXTRACTED_SUFFIX;
@@ -157,9 +158,7 @@ public class ClassUtils {
                     }
                 }
             }
-        } catch (Exception ignore) {
-
-        }
+        } catch (Exception ignore) {}
 
         Logger.info("VM with name " + vmName + (isMultidexCapable ? " has multidex support" : " does not have multidex support"));
         return isMultidexCapable;
