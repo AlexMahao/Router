@@ -69,7 +69,10 @@ public class MainActivity extends AppCompatActivity {
 #### 初始化 （加载初始化累，加载地址）
 
 ```java
- RouterClient.init(getPackageName());
+         // 初始化module
+         Router.init(getApplicationContext());
+         // 设置debug模式
+         Router.setDebug(BuildConfig.DEBUG);
 ```
 
 #### 页面跳转

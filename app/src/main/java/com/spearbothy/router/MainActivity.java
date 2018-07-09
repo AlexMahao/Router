@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // 初始化module
         Router.init(getApplicationContext());
+        // 设置debug模式
         Router.setDebug(BuildConfig.DEBUG);
     }
 
