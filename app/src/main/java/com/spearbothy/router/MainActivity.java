@@ -10,7 +10,7 @@ import com.spearbothy.router.api.ResultCallback;
 import com.spearbothy.router.api.Router;
 import com.spearbothy.router.api.router.RouterResponse;
 
-@Route(path = "/main", desc = "首页")
+@Route(path = "/main", desc = "首页", version = "1.0.0")
 public class MainActivity extends AppCompatActivity {
 
     @Override

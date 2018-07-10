@@ -108,7 +108,7 @@ public class RouterProcess extends AbstractProcessor {
             for (Map.Entry<TypeElement, Route> entry : routerMap.entrySet()) {
                 TypeElement element = entry.getKey();
                 Route value = entry.getValue();
-                loadIntoBuilder.addStatement("root.put($S, new $T($T.class, $S))", value.path(), RouteEntity.class, ClassName.get(element), value.desc());
+                loadIntoBuilder.addStatement("root.put($S, new $T($T.class, $S, $S))", value.path(), RouteEntity.class, ClassName.get(element), value.desc(), value.version());
             }
 
             MethodSpec loadInto = loadIntoBuilder.build();

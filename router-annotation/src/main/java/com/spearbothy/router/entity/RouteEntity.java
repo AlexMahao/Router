@@ -10,9 +10,20 @@ public class RouteEntity {
 
     private String desc;
 
-    public RouteEntity(Class clazz, String desc) {
+    private String version;
+
+    public RouteEntity(Class clazz, String desc, String version) {
         this.clazz = clazz;
         this.desc = desc;
+        this.version = version;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public Class getClazz() {
@@ -36,6 +47,7 @@ public class RouteEntity {
         return "RouteEntity{" +
                 "clazz=" + clazz +
                 ", desc='" + desc + '\'' +
+                ", version='" + version + '\'' +
                 '}';
     }
 }

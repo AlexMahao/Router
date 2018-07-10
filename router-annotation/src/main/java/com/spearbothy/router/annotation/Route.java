@@ -15,5 +15,16 @@ public @interface Route {
 
     String path();
 
-    String desc() default "暂未添加描述";
+    String desc();
+
+    String version(); // 支持版本
+
+//
+//    boolean download2Store() default false; // 是否跳转应用商城
+//
+//    // 业务参数，暂不考虑
+//    boolean needLogin() default false; // 判断是否登录
+//
+//    // 整体路径分为两部分，第一部分对activity的声明。
+//    // 具体路径跳转
 }
