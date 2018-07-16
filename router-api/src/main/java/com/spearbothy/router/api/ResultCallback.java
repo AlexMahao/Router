@@ -1,6 +1,6 @@
 package com.spearbothy.router.api;
 
-import com.spearbothy.router.api.router.RouterResponse;
+import com.spearbothy.router.api.router.Response;
 import com.spearbothy.router.api.util.Logger;
 
 /**
@@ -10,7 +10,7 @@ import com.spearbothy.router.api.util.Logger;
 public abstract class ResultCallback {
     public abstract void onSuccess();
 
-    public void onError(RouterResponse response) {
+    public void onError(Response response) {
         if (Router.DEBUG) {
             Logger.error(response.toString());
         }

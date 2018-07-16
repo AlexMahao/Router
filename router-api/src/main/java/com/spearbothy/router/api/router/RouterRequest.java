@@ -52,7 +52,9 @@ public class RouterRequest {
         } catch (MalformedURLException e) {
             Logger.error("协议不合法：" + getUrl(), e);
             if (callback != null) {
-                callback.onError(new RouterResponse(this, RouterResponse.ERROR_PROTOCOL, "协议不合法"));
+                Response response = new Response();
+                response.setError(Response.CODE_FAIL_PROTOCOL, "协议不合法");
+                callback.onError(response);
             }
         }
     }

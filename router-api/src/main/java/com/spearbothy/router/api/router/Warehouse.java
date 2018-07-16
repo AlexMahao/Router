@@ -2,10 +2,13 @@ package com.spearbothy.router.api.router;
 
 import com.spearbothy.router.api.Router;
 import com.spearbothy.router.api.entity.ModuleEntity;
+import com.spearbothy.router.api.interceptor.Interceptor;
 import com.spearbothy.router.api.util.Logger;
 import com.spearbothy.router.entity.RouteEntity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * @author mahao
@@ -16,6 +19,11 @@ import java.util.ArrayList;
 public class Warehouse {
 
     private ArrayList<ModuleEntity> routerModuleList = new ArrayList<>();
+
+    // 拦截器
+    private ArrayList<Interceptor> interceptors = new ArrayList<>();
+
+//    private Comparator<Interceptor> interceptorComparator = new InterceptorComparator();
 
     public void addModule(ModuleEntity moduleEntity, boolean force) {
         int index = routerModuleList.indexOf(moduleEntity);
@@ -56,6 +64,16 @@ public class Warehouse {
         if (module == null) {
             return null;
         }
-       return module.getRouteMap().get(path);
+        return module.getRouteMap().get(path);
+    }
+
+    public void addInterceptor(Interceptor interceptor) {
+        interceptors.add(interceptor);
+        // 排序
+//        Collections.sort(interceptors, interceptorComparator);
+    }
+
+    public ArrayList<Interceptor> getInterceptor() {
+        return interceptors;
     }
 }

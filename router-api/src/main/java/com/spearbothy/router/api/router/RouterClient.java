@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.spearbothy.router.api.Constants;
 import com.spearbothy.router.api.entity.ModuleEntity;
+import com.spearbothy.router.api.interceptor.RouterInterceptorChain;
 import com.spearbothy.router.api.util.ClassUtils;
 import com.spearbothy.router.api.util.Logger;
 import com.spearbothy.router.entity.RouteEntity;
@@ -22,9 +23,13 @@ import java.util.Set;
 
 public class RouterClient {
 
-    private Warehouse warehouse;
+    public Warehouse warehouse;
 
     private static RouterClient sClient = null;
+
+    public static RouterClient getInstance() {
+        return sClient;
+    }
 
     /**
      * 加载路由图谱
@@ -58,33 +63,19 @@ public class RouterClient {
         }
     }
 
-    public static void process(RouterRequest request) {
-        // 数据校验并查找对应处理的RouterHandler
-        if (request.getContext() instanceof Activity) {
-            if (Constants.ROUTER_PROTOCOL.equals(request.getProtocol())) {
-
-                // 查询对应routeEntity
-                ModuleEntity module = sClient.warehouse.findModule(request.getHost());
-                if (module == null) {
-                    error(request, RouterResponse.ERROR_PROTOCOL, "模块未找到");
-                    return;
-                }
-
-                RouteEntity route = sClient.warehouse.findRoute(module, request.getPath());
-                if (route == null) {
-                    error(request, RouterResponse.ERROR_PROTOCOL, "路径不匹配");
-                    return;
-                }
-
-                startActivity(request, route);
-            } else {
-                error(request, RouterResponse.ERROR_PROTOCOL, "协议不合法：" + request.getProtocol());
+    static void process(RouterRequest request) {
+        Response response = new RouterInterceptorChain(0, request).proceed(request);
+        if (response.isSuccess()) {
+            // 检查activity是否能跳转
+            if (request.getCallback() != null) {
+                request.getCallback().onSuccess();
+            }
+            startActivity(request, response.getEntity());
+        } else {
+            if (request.getCallback() != null) {
+                request.getCallback().onError(response);
             }
         }
-    }
-
-    private static void error(RouterRequest request, int code, String msg) {
-        request.getCallback().onError(new RouterResponse(request, code, msg));
     }
 
     private static void startActivity(RouterRequest request, RouteEntity meta) {

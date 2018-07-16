@@ -8,7 +8,7 @@ import android.widget.Toast;
 import com.spearbothy.router.annotation.Route;
 import com.spearbothy.router.api.ResultCallback;
 import com.spearbothy.router.api.Router;
-import com.spearbothy.router.api.router.RouterResponse;
+import com.spearbothy.router.api.router.Response;
 
 @Route(path = "/main", desc = "首页", version = "1.0.0")
 public class MainActivity extends AppCompatActivity {
@@ -19,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // 初始化module
         Router.init(getApplicationContext());
+        Router.addInterceptor(new Demo1Interceptor());
+        Router.addInterceptor(new Demo2Interceptor());
         // 设置debug模式
         Router.setDebug(BuildConfig.DEBUG);
     }
@@ -40,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onError(RouterResponse response) {
-                        Toast.makeText(getApplicationContext(), response.getDesc(), Toast.LENGTH_SHORT).show();
+                    public void onError(Response response) {
+                        Toast.makeText(getApplicationContext(), response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
