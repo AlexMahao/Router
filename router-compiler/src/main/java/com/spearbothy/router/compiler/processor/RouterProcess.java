@@ -1,7 +1,9 @@
 package com.spearbothy.router.compiler.processor;
 
+import com.alibaba.fastjson.JSON;
 import com.google.auto.service.AutoService;
 import com.spearbothy.router.annotation.Route;
+import com.spearbothy.router.compiler.entity.RouterDetail;
 import com.spearbothy.router.compiler.util.Constants;
 import com.spearbothy.router.compiler.util.Logger;
 import com.spearbothy.router.compiler.util.StringUtils;
@@ -13,10 +15,17 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,6 +50,7 @@ public class RouterProcess extends AbstractProcessor {
     private Filer filer;
     private String moduleName;
     private Logger logger;
+    private static final String WORKING_DIR = System.getProperty("user.dir"); // 项目目录
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -89,6 +99,9 @@ public class RouterProcess extends AbstractProcessor {
 
         if (!routerMap.isEmpty()) {
             logger.info(moduleName + " init ...");
+            // 生成清单文件
+            RouterDetail routerDetail = new RouterDetail();
+            routerDetail.setName(moduleName);
 
             ClassName InterfaceName = ClassName.get(Constants.LOADER_INTERFACE_PACKAGE, Constants.LOADER_INTERFACE_NAME);
 
@@ -109,8 +122,16 @@ public class RouterProcess extends AbstractProcessor {
                 TypeElement element = entry.getKey();
                 Route value = entry.getValue();
                 loadIntoBuilder.addStatement("root.put($S, new $T($T.class, $S, $S))", value.path(), RouteEntity.class, ClassName.get(element), value.desc(), value.version());
+
+                // 输出路由清单
+                RouterDetail.Path path = new RouterDetail.Path(ClassName.get(element).packageName() + ClassName.get(element).simpleName());
+                path.setPath(value.path(), moduleName, Constants.ROUTER_PROTOCOL);
+                path.addParams("version", value.version());
+                path.setDesc(value.desc());
+                routerDetail.addPath(path);
             }
 
+            // 写入当前编译
             MethodSpec loadInto = loadIntoBuilder.build();
 
             MethodSpec getModuleName = MethodSpec.methodBuilder(Constants.LOADER_INTERFACE_GET_MODULE_NAME)
@@ -136,9 +157,23 @@ public class RouterProcess extends AbstractProcessor {
             logger.info(typeSpec.toString());
             logger.infoLine("");
             logger.info(moduleName + " success !!! ");
+
+            // 保存清单文件
+            save(JSON.toJSONString(routerDetail, true));
         }
     }
 
+    private void save(String detail) {
+        try {
+            List<String> lines = Arrays.asList(detail);
+            Files.createDirectories(Paths.get(Constants.ROUTER_DETAIL_DIR));
+            Path file = Paths.get(Constants.ROUTER_DETAIL_DIR + File.separator + moduleName + ".json");
+            logger.info("协议清单文件 PATH: " + file.toAbsolutePath());
+            Files.write(file, lines, Charset.forName("UTF-8"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {

@@ -1,0 +1,13 @@
+{
+	"name":"test",
+	"pathList":[
+		{
+			"className":"com.spearbothy.testMainActivity",
+			"desc":"测试的首页面",
+			"params":{
+				"version":"1.0.0"
+			},
+			"path":"router://test/main"
+		}
+	]
+}

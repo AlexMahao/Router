@@ -1,5 +1,7 @@
 package com.spearbothy.router.compiler.util;
 
+import java.io.File;
+
 /**
  * Created by android-dev on 2018/6/26.
  */
@@ -23,5 +25,9 @@ public class Constants {
 
     public static final String LOADER_INTERFACE_GET_MODULE_NAME = "getModuleName";
 
+    public static final String ROUTER_PROTOCOL = "router";
 
+    public static final String WORKING_DIR = System.getProperty("user.dir");// 工程根目录
+
+    public static final String ROUTER_DETAIL_DIR = WORKING_DIR + File.separator + ROUTER_PROTOCOL;
 }
