@@ -17,6 +17,8 @@ public class Response {
 
     public static final int CODE_FAIL_ROUTER_NOT_FOUND = -2;
 
+    public static final int CODE_FAIL_VERSION_NOT_SUPPORT = -3;
+
     private int errorCode;
 
     private String errorMessage;
