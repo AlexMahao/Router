@@ -9,7 +9,12 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
-
+        // 声明唯一包名，用于确定辅助类生成位置
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: 'app']
+            }
+        }
 
     }
     buildTypes {
@@ -20,12 +25,7 @@ android {
     }
 }
 
-// 声明唯一包名，用于确定辅助类生成位置
-javaCompileOptions {
-    annotationProcessorOptions {
-        arguments = [moduleName: 'app']
-    }
-}
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
