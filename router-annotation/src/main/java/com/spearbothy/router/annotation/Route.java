@@ -4,6 +4,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by android-dev on 2018/3/28.
@@ -19,6 +21,7 @@ public @interface Route {
 
     String version(); // 支持版本
 
+    
 //
 //    boolean download2Store() default false; // 是否跳转应用商城
 //

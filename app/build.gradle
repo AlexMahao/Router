@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'save.state'
 
 android {
     compileSdkVersion 26
@@ -9,12 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        // 声明唯一包名，用于确定辅助类生成位置
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [moduleName: 'app']
-            }
-        }
+
     }
     buildTypes {
         release {
@@ -24,6 +20,12 @@ android {
     }
 }
 
+// 声明唯一包名，用于确定辅助类生成位置
+javaCompileOptions {
+    annotationProcessorOptions {
+        arguments = [moduleName: 'app']
+    }
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -36,4 +38,6 @@ dependencies {
     implementation project(':router-api')
     // 测试多module的情况
     implementation project(':test')
+
+
 }

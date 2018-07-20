@@ -8,6 +8,8 @@ import com.spearbothy.router.api.router.RouterRequest;
 import com.spearbothy.router.entity.RouteEntity;
 
 /**
+ *
+ * Interceptor 中可以添加对自定义参数的处理
  * @author mahao
  * @date 2018/7/10 下午3:24
  * @email zziamahao@163.com
