@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'// 应用maven插件
 
 android {
     compileSdkVersion 26
@@ -19,6 +20,18 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation project(':router-annotation')
+    implementation deps.support.appcompat
+    implementation deps.router_annotation
+}
+
+// 上传到本地代码库
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('../repo'))
+            pom.groupId = 'com.spearbothy' // 组名
+            pom.artifactId = 'router-api' // 插件名
+            pom.version = '0.0.1' // 版本号
+        }
+    }
 }

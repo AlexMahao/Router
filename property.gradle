@@ -1,0 +1,23 @@
+// 声明依赖
+def deps = [:]
+
+deps.router_annotation="com.spearbothy:router-annotation:0.0.1"
+deps.router_compiler="com.spearbothy:router-compiler:0.0.1"
+deps.router_api="com.spearbothy:router-api:0.0.1"
+
+// support 依赖
+def support = [:]
+support.appcompat = "com.android.support:appcompat-v7:26.1.0"
+deps.support = support
+
+ext.deps = deps
+
+deps.gradle = "com.android.tools.build:gradle:3.0.0"
+
+// 基本sdk配置
+def config = [:]
+config.compileSdkVersion = 26
+config.targetSdkVersion = 26
+config.minSdkVersion = 17
+config.buildToolsVersion = '26.0.3'
+ext.config = config

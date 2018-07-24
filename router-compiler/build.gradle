@@ -1,12 +1,26 @@
 apply plugin: 'java-library'
+apply plugin: 'maven'// 应用maven插件
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.google.auto.service:auto-service:1.0-rc4'
-    implementation project(':router-annotation')
+    implementation deps.router_annotation
     compile 'com.squareup:javapoet:1.7.0'
     implementation 'com.alibaba:fastjson:1.1.68.android'
 }
 
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
+
+
+// 上传到本地代码库
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('../repo'))
+            pom.groupId = 'com.spearbothy' // 组名
+            pom.artifactId = 'router-compiler' // 插件名
+            pom.version = '0.0.1' // 版本号
+        }
+    }
+}

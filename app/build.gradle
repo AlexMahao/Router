@@ -1,21 +1,20 @@
 apply plugin: 'com.android.application'
-apply plugin: 'save.state'
+apply plugin: 'plugin.router'
+
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion config.compileSdkVersion
     defaultConfig {
-        applicationId "com.spearbothy.router"
-        minSdkVersion 15
-        targetSdkVersion 26
+        minSdkVersion config.minSdkVersion
+        targetSdkVersion config.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        // 声明唯一包名，用于确定辅助类生成位置
+
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [moduleName: 'app']
+                arguments = ["moduleName": 'app']
             }
         }
-
     }
     buildTypes {
         release {
@@ -23,21 +22,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
 }
 
 
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    // 生成辅助类代码
-    annotationProcessor project(':router-compiler')
-    // 注解声明
-    implementation project(':router-annotation')
-    // 页面跳转的api
-    implementation project(':router-api')
+    implementation deps.support.appcompat
+    api deps.router_api
     // 测试多module的情况
-    implementation project(':test')
-
-
+//    implementation project(':test')
 }
+
+

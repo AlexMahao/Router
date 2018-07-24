@@ -60,7 +60,7 @@ public class RouterProcess extends AbstractProcessor {
         logger = new Logger(processingEnv.getMessager());
 
         Map<String, String> options = processingEnv.getOptions();
-
+        logger.info("option:" + options.toString());
         if (!options.isEmpty()) {
             moduleName = options.get(Constants.MODULE_NAME_KEY);
         }

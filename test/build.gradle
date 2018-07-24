@@ -1,11 +1,16 @@
 apply plugin: 'com.android.library'
+//apply plugin: 'plugin.router'
+
+//SRoute{
+//    moduleName="app"
+//}
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion config.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 26
+        minSdkVersion config.minSdkVersion
+        targetSdkVersion config.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -27,8 +32,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation project(':router-annotation')
-    implementation project(':router-api')
-    annotationProcessor project(':router-compiler')
+    implementation deps.support.appcompat
+    // 页面跳转的api
+    api deps.router_api
 }

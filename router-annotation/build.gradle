@@ -1,4 +1,5 @@
 apply plugin: 'java-library'
+apply plugin: 'maven'// 应用maven插件
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -6,3 +7,15 @@ dependencies {
 
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
+
+// 上传到本地代码库
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('../repo'))
+            pom.groupId = 'com.spearbothy' // 组名
+            pom.artifactId = 'router-annotation' // 插件名
+            pom.version = '0.0.1' // 版本号
+        }
+    }
+}
