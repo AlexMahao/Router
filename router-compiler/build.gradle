@@ -4,7 +4,7 @@ apply plugin: 'maven'// 应用maven插件
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.google.auto.service:auto-service:1.0-rc4'
-    implementation deps.router_annotation
+    implementation 'com.spearbothy:router-annotation:0.0.3'
     compile 'com.squareup:javapoet:1.7.0'
     implementation 'com.alibaba:fastjson:1.1.68.android'
 }

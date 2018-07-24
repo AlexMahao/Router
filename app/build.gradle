@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'plugin.router'
 
-
 android {
     compileSdkVersion config.compileSdkVersion
     defaultConfig {
@@ -33,7 +32,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation deps.support.appcompat
-    api deps.router_api
+    api "com.spearbothy:router-api:0.0.1"
+//    api "com.spearbothy:router-annotation:0.0.2"
     // 测试多module的情况
 //    implementation project(':test')
 }

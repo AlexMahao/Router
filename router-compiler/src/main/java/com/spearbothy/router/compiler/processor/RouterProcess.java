@@ -44,7 +44,7 @@ import javax.lang.model.element.TypeElement;
 
 @AutoService(Processor.class)
 @SupportedOptions(Constants.MODULE_NAME_KEY)
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class RouterProcess extends AbstractProcessor {
 
     private Filer filer;

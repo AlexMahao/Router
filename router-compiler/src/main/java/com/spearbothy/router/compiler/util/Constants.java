@@ -30,4 +30,10 @@ public class Constants {
     public static final String WORKING_DIR = System.getProperty("user.dir");// 工程根目录
 
     public static final String ROUTER_DETAIL_DIR = WORKING_DIR + File.separator + ROUTER_PROTOCOL;
+
+    public static final String CLASS_ACTIVITY = "android.app.Activity";
+
+    public static final String CLASS_FRAGMENT_ACTIVITY = "android.support.v4.app.FragmentActivity";
+
+    public static final String GENERATED_FILE_SUFFIX = "AutoSaveState";
 }

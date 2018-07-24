@@ -20,8 +20,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation deps.support.appcompat
-    implementation deps.router_annotation
+    implementation 'com.spearbothy:router-annotation:0.0.3'
 }
 
 // 上传到本地代码库

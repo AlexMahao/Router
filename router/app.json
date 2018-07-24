@@ -2,20 +2,20 @@
 	"name":"app",
 	"pathList":[
 		{
-			"className":"com.spearbothy.routerMain2Activity",
-			"desc":"第二个页面",
-			"params":{
-				"version":"1.0.0"
-			},
-			"path":"router://app/main2"
-		},
-		{
 			"className":"com.spearbothy.routerMainActivity",
 			"desc":"首页",
 			"params":{
 				"version":"1.0.0"
 			},
 			"path":"router://app/main"
+		},
+		{
+			"className":"com.spearbothy.routerMain2Activity",
+			"desc":"第二个页面",
+			"params":{
+				"version":"1.0.0"
+			},
+			"path":"router://app/main2"
 		}
 	]
 }

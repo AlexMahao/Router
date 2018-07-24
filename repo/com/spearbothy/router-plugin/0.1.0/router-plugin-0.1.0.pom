@@ -5,4 +5,30 @@
   <groupId>com.spearbothy</groupId>
   <artifactId>router-plugin</artifactId>
   <version>0.1.0</version>
+  <dependencies>
+    <dependency>
+      <groupId>com.android.tools.build</groupId>
+      <artifactId>gradle-api</artifactId>
+      <version>3.0.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>3.12.1.GA</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.6</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.spearbothy</groupId>
+      <artifactId>router-annotation</artifactId>
+      <version>0.0.3</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
 </project>

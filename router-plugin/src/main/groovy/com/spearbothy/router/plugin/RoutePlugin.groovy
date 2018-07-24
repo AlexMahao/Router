@@ -33,8 +33,9 @@ class RoutePlugin implements Plugin<Project> {
 //        }
         project.dependencies {
             annotationProcessor 'com.spearbothy:router-compiler:0.0.1'
-            implementation 'com.spearbothy:router-annotation:0.0.1'
         }
+
+        project.android.registerTransform(new SaveStateTransform(project))
     }
 
     String getPackageName(def variant) {
