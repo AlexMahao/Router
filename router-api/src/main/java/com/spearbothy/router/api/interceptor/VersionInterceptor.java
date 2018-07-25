@@ -2,6 +2,7 @@ package com.spearbothy.router.api.interceptor;
 
 import android.text.TextUtils;
 
+import com.spearbothy.router.api.entity.RouteAddition;
 import com.spearbothy.router.api.router.Response;
 import com.spearbothy.router.entity.RouteEntity;
 
@@ -13,12 +14,11 @@ import com.spearbothy.router.entity.RouteEntity;
 
 public class VersionInterceptor implements Interceptor {
 
-
     @Override
     public Response intercept(Chain chain) {
         Response response = chain.proceed(chain.request());
         if (response.isSuccess()) {
-            RouteEntity entity = response.getEntity();
+            RouteAddition entity = response.getEntity();
             String activityVersion = entity.getVersion();
             String pathVersion = chain.request().getParams().get("version");
             if (!isSupportVersion(activityVersion, pathVersion)) {

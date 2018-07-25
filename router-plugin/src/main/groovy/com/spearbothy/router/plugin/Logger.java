@@ -15,4 +15,8 @@ public class Logger {
     public static void error(String msg) {
         System.err.println(msg);
     }
+
+    public static void error(String msg, Throwable throwable) {
+        System.err.println(msg + "\n" + throwable.getMessage());
+    }
 }

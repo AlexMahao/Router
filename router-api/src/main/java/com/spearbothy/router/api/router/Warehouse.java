@@ -2,6 +2,7 @@ package com.spearbothy.router.api.router;
 
 import com.spearbothy.router.api.Router;
 import com.spearbothy.router.api.entity.ModuleEntity;
+import com.spearbothy.router.api.entity.RouteAddition;
 import com.spearbothy.router.api.interceptor.Interceptor;
 import com.spearbothy.router.api.util.Logger;
 import com.spearbothy.router.entity.RouteEntity;
@@ -60,7 +61,7 @@ public class Warehouse {
         return null;
     }
 
-    public RouteEntity findRoute(ModuleEntity module, String path) {
+    public RouteAddition findRoute(ModuleEntity module, String path) {
         if (module == null) {
             return null;
         }

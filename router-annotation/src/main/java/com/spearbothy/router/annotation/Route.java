@@ -11,8 +11,8 @@ import java.util.Map;
  * Created by android-dev on 2018/3/28.
  */
 
-@Retention(RetentionPolicy.CLASS)
-@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.CLASS) // 定义注解在哪一个级别可用
+@Target(ElementType.TYPE) // 注解的目标
 public @interface Route {
 
     String path();

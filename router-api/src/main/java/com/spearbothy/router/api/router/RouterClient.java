@@ -6,10 +6,10 @@ import android.content.Intent;
 
 import com.spearbothy.router.api.Constants;
 import com.spearbothy.router.api.entity.ModuleEntity;
+import com.spearbothy.router.api.entity.RouteAddition;
 import com.spearbothy.router.api.interceptor.RouterInterceptorChain;
 import com.spearbothy.router.api.util.ClassUtils;
 import com.spearbothy.router.api.util.Logger;
-import com.spearbothy.router.entity.RouteEntity;
 
 import java.util.Set;
 
@@ -78,7 +78,7 @@ public class RouterClient {
         }
     }
 
-    private static void startActivity(RouterRequest request, RouteEntity meta) {
+    private static void startActivity(RouterRequest request, RouteAddition meta) {
         Context context = request.getContext();
         Intent intent = new Intent(context, meta.getClazz());
         if (!(context instanceof Activity)) {

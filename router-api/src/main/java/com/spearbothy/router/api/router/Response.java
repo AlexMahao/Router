@@ -1,6 +1,6 @@
 package com.spearbothy.router.api.router;
 
-import com.spearbothy.router.entity.RouteEntity;
+import com.spearbothy.router.api.entity.RouteAddition;
 
 /**
  * @author mahao
@@ -24,7 +24,7 @@ public class Response {
     private String errorMessage;
 
     // 查询结果
-    private RouteEntity entity;
+    private RouteAddition entity;
 
 
     public int getErrorCode() {
@@ -35,11 +35,11 @@ public class Response {
         this.errorCode = errorCode;
     }
 
-    public RouteEntity getEntity() {
+    public RouteAddition getEntity() {
         return entity;
     }
 
-    public void setEntity(RouteEntity entity) {
+    public void setEntity(RouteAddition entity) {
         this.entity = entity;
     }
 
@@ -48,7 +48,7 @@ public class Response {
         this.errorMessage = errorMessage;
     }
 
-    public void setSuccess(RouteEntity entity) {
+    public void setSuccess(RouteAddition entity) {
         this.errorCode = CODE_SUCCESS;
         this.entity = entity;
     }

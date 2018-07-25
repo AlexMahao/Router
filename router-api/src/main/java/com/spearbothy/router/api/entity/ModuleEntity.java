@@ -1,7 +1,5 @@
 package com.spearbothy.router.api.entity;
 
-import com.spearbothy.router.entity.RouteEntity;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +12,7 @@ import java.util.Map;
 public class ModuleEntity {
     private String moduleName;
 
-    private Map<String, RouteEntity> routeMap = new HashMap<>();
+    private Map<String, RouteAddition> routeMap = new HashMap<>();
 
     public ModuleEntity(String moduleName) {
         this.moduleName = moduleName;
@@ -28,11 +26,11 @@ public class ModuleEntity {
         this.moduleName = moduleName;
     }
 
-    public Map<String, RouteEntity> getRouteMap() {
+    public Map<String, RouteAddition> getRouteMap() {
         return routeMap;
     }
 
-    public void setRouteMap(Map<String, RouteEntity> routeMap) {
+    public void setRouteMap(Map<String, RouteAddition> routeMap) {
         this.routeMap = routeMap;
     }
 

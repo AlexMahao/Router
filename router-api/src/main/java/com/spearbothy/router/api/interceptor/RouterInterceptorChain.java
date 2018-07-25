@@ -2,6 +2,7 @@ package com.spearbothy.router.api.interceptor;
 
 import com.spearbothy.router.api.Constants;
 import com.spearbothy.router.api.entity.ModuleEntity;
+import com.spearbothy.router.api.entity.RouteAddition;
 import com.spearbothy.router.api.router.Response;
 import com.spearbothy.router.api.router.RouterClient;
 import com.spearbothy.router.api.router.RouterRequest;
@@ -49,7 +50,7 @@ public class RouterInterceptorChain implements Interceptor.Chain {
             if (module == null) {
                 response.setError(Response.CODE_FAIL_ROUTER_NOT_FOUND, "模块未找到,请查看moduleName配置");
             } else {
-                RouteEntity route = RouterClient.getInstance().warehouse.findRoute(module, request.getPath());
+                RouteAddition route = RouterClient.getInstance().warehouse.findRoute(module, request.getPath());
                 if (route == null) {
                     response.setError(Response.CODE_FAIL_ROUTER_NOT_FOUND, "路径不匹配");
                 } else {

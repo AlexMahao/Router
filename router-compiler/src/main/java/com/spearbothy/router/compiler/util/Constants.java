@@ -1,5 +1,7 @@
 package com.spearbothy.router.compiler.util;
 
+import com.squareup.javapoet.ClassName;
+
 import java.io.File;
 
 /**
@@ -36,4 +38,6 @@ public class Constants {
     public static final String CLASS_FRAGMENT_ACTIVITY = "android.support.v4.app.FragmentActivity";
 
     public static final String GENERATED_FILE_SUFFIX = "$$RouteAutowired";
+
+    public static final ClassName CLASS_BUNDLE = ClassName.get("android.os", "Bundle");
 }

@@ -168,6 +168,7 @@ class RouteAutowriedTransform extends Transform {
         }
 
         def list = []
+
         ctClass.declaredFields.each { field ->
             if (field.getAnnotation(Autowired.class) != null) {
                 Logger.info("field ${field.name} is Autowired annotated! ")

@@ -1,6 +1,6 @@
 package com.spearbothy.router.api.router;
 
-import com.spearbothy.router.entity.RouteEntity;
+import com.spearbothy.router.api.entity.RouteAddition;
 
 import java.util.Map;
 
@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface IRouterLoader {
     // 加载module
-    void loadInto(Map<String, RouteEntity> root);
+    void loadInto(Map<String, RouteAddition> root);
 
     // 获取module的名字
     String getModuleName();

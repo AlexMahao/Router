@@ -1,9 +1,13 @@
 package com.spearbothy.router.compiler.processor;
 
-import com.alibaba.fastjson.JSON;
 import com.google.auto.service.AutoService;
+import com.spearbothy.router.annotation.Autowired;
 import com.spearbothy.router.annotation.Route;
+import com.spearbothy.router.compiler.entity.Addition;
+import com.spearbothy.router.compiler.entity.AutowiredField;
+import com.spearbothy.router.compiler.entity.RouteClass;
 import com.spearbothy.router.compiler.entity.RouterDetail;
+import com.spearbothy.router.compiler.util.BundleStateHelper;
 import com.spearbothy.router.compiler.util.Constants;
 import com.spearbothy.router.compiler.util.Logger;
 import com.spearbothy.router.compiler.util.StringUtils;
@@ -22,8 +26,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +44,9 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 
 
 @AutoService(Processor.class)
@@ -75,9 +82,15 @@ public class RouterProcess extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnv) {
         if (set != null && !set.isEmpty()) {
-            Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Route.class);
+            // 处理所有注解
+            List<Addition> additionList = new ArrayList<>();
+
+            initRoute(additionList, roundEnv);
+            initAutowird(additionList, roundEnv);
+
             try {
-                processRouter(elements);
+                generatorAutowiredFile(additionList);
+                generatorRouteFile(additionList);
             } catch (IOException e) {
                 logger.error(e);
             }
@@ -86,81 +99,208 @@ public class RouterProcess extends AbstractProcessor {
         return false;
     }
 
-    private void processRouter(Set<? extends Element> elements) throws IOException {
-        Map<TypeElement, Route> routerMap = new HashMap<>();
-        if (elements != null && !elements.isEmpty()) {
-            for (Element element : elements) {
+    private void generatorRouteFile(List<Addition> additionList) throws IOException{
+        ClassName InterfaceName = ClassName.get(Constants.LOADER_INTERFACE_PACKAGE, Constants.LOADER_INTERFACE_NAME);
+
+        ClassName routeAddition = ClassName.get(Constants.ROUTER_PACKAGE + ".api.entity", "RouteAddition");
+
+        ParameterizedTypeName routerMapType = ParameterizedTypeName.get(
+                ClassName.get(Map.class),
+                ClassName.get(String.class),
+                routeAddition
+        );
+
+        ParameterSpec parameterSpec = ParameterSpec.builder(routerMapType, "root").build();
+        MethodSpec.Builder loadIntoBuilder = MethodSpec.methodBuilder(Constants.LOADER_INTERFACE_LOADINTO)
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(parameterSpec);
+
+        loadIntoBuilder.addStatement("$T routeAddition = null", routeAddition);
+        for (Addition addition : additionList) {
+            RouteClass routeClass = addition.getRouteClass();
+            if (routeClass != null) {
+                loadIntoBuilder.addStatement("routeAddition = new $T($T.class, $S, $S)", routeAddition, routeClass.getClassName(), routeClass.getDesc(), routeClass.getVersion());
+                for (AutowiredField field : addition.getAutowiredFields()){
+                    loadIntoBuilder.addStatement("routeAddition.addAutowiredField($S, $S)", field.getFieldName(),field.getFieldType());
+                }
+                loadIntoBuilder.addStatement("root.put($S, routeAddition)", routeClass.getPath());
+            }
+        }
+//
+//        for (Map.Entry<TypeElement, Route> entry : routerMap.entrySet()) {
+//            TypeElement element = entry.getKey();
+//            Route value = entry.getValue();
+//            loadIntoBuilder.addStatement("root.put($S, new $T($T.class, $S, $S))", value.path(), RouteEntity.class, ClassName.get(element), value.desc(), value.version());
+//
+//            // 输出路由清单
+//            RouterDetail.Path path = new RouterDetail.Path(ClassName.get(element).packageName() + ClassName.get(element).simpleName());
+//            path.setPath(value.path(), moduleName, Constants.ROUTER_PROTOCOL);
+//            path.addParams("version", value.version());
+//            path.setDesc(value.desc());
+//            routerDetail.addPath(path);
+//        }
+
+        // 写入当前编译
+        MethodSpec loadInto = loadIntoBuilder.build();
+
+        MethodSpec getModuleName = MethodSpec.methodBuilder(Constants.LOADER_INTERFACE_GET_MODULE_NAME)
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC)
+                .addStatement("return $S", moduleName)
+                .returns(String.class)
+                .build();
+
+        TypeSpec typeSpec = TypeSpec.classBuilder(Constants.ROUTER_LOADER_CLASS_NAME + moduleName)
+                .addSuperinterface(InterfaceName)
+                .addModifiers(Modifier.PUBLIC)
+                .addMethod(loadInto)
+                .addMethod(getModuleName)
+                .build();
+
+        JavaFile javaFile = JavaFile.builder(Constants.ROUTER_LOADER_PACKAGE, typeSpec)
+                .build();
+
+        javaFile.writeTo(filer);
+
+        logger.infoLine("生成类信息");
+        logger.info(typeSpec.toString());
+        logger.infoLine("");
+        logger.info(moduleName + " success !!! ");
+
+
+    }
+
+    private void generatorAutowiredFile(List<Addition> additions) {
+        for (Addition addition : additions) {
+            if (addition.getAutowiredFields().isEmpty()) {
+                continue;
+            }
+            // 生成java文件
+            // 构造 onSaveInstance(Activity instance, Bundle outState){
+            //    outState.putXXX(name, instance.name);
+            // }
+            MethodSpec.Builder saveInstanceBuilder = MethodSpec.methodBuilder("onSaveInstanceState")
+                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                    .returns(void.class)
+                    .addParameter(ClassName.bestGuess(addition.getQualifiedName()), "instance")
+                    .addParameter(Constants.CLASS_BUNDLE, "outState");
+
+            for (AutowiredField field : addition.getAutowiredFields()) {
+                BundleStateHelper.statementSaveValueIntoBundle(saveInstanceBuilder, field.getFieldName(), field.getFieldType(), "instance", "outState");
+            }
+            MethodSpec saveInstanceMethod = saveInstanceBuilder.build();
+
+            // 构造 onRestoreInstanceState(Activity instance, Bundle outState){
+            //    instance.name = outState.getXXX(name);
+            // }
+            MethodSpec.Builder restoreBuilder = MethodSpec.methodBuilder("onRestoreInstanceState")
+                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                    .returns(void.class)
+                    .addParameter(ClassName.bestGuess(addition.getQualifiedName()), "instance")
+                    .addParameter(Constants.CLASS_BUNDLE, "outState");
+            for (AutowiredField field : addition.getAutowiredFields()) {
+                BundleStateHelper.statementGetValueFromBundle(restoreBuilder, field.getFieldName(), field.getFieldType(), "instance", "outState");
+            }
+            MethodSpec restoreMethod = restoreBuilder.build();
+            //生成类
+            TypeSpec saveStateClass = TypeSpec.classBuilder(addition.getSimpleName() + Constants.GENERATED_FILE_SUFFIX)
+                    .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                    .addMethod(saveInstanceMethod)
+                    .addMethod(restoreMethod)
+                    .build();
+
+
+            JavaFile javaFile = JavaFile.builder(addition.getPackageName(), saveStateClass)
+                    .build();
+
+            try {
+                javaFile.writeTo(filer);
+
+                logger.infoLine("生成类信息");
+                logger.info(saveStateClass.toString());
+                logger.infoLine("");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
+    private void initAutowird(List<Addition> additionList, RoundEnvironment roundEnv) {
+        Set<? extends Element> autowiredElements = roundEnv.getElementsAnnotatedWith(Autowired.class);
+        if (autowiredElements != null && !autowiredElements.isEmpty()) {
+            for (Element element : autowiredElements) {
+                VariableElement variableElement = (VariableElement) element;
+                TypeElement typeElement = (TypeElement) variableElement.getEnclosingElement();
+                // 全路径类名
+                String qualifiedName = typeElement.getQualifiedName().toString();
+                if (checkIsSubClassOf(typeElement, Constants.CLASS_ACTIVITY, Constants.CLASS_FRAGMENT_ACTIVITY)) {
+
+                    Addition addition = findAddition(additionList, qualifiedName);
+                    if (addition == null) {
+                        addition = new Addition();
+                        addition.setQualifiedName(qualifiedName);
+                        additionList.add(addition);
+                    }
+                    AutowiredField field = new AutowiredField();
+                    field.setFieldName(variableElement.getSimpleName().toString());
+                    field.setFieldType(variableElement.asType().toString());
+                    addition.addAutowiredField(field);
+                }
+            }
+        }
+    }
+
+
+    public void initRoute(List<Addition> additions, RoundEnvironment roundEnv) {
+        Set<? extends Element> routeElements = roundEnv.getElementsAnnotatedWith(Route.class);
+        if (routeElements != null && !routeElements.isEmpty()) {
+            for (Element element : routeElements) {
                 // 检查element的类型
                 TypeElement typeElement = (TypeElement) element;
-                Route annotation = typeElement.getAnnotation(Route.class);
-                routerMap.put(typeElement, annotation);
+                Route route = typeElement.getAnnotation(Route.class);
+                String qualifiedName = typeElement.getQualifiedName().toString();
+                Addition addition = findAddition(additions, qualifiedName);
+                if (addition == null) {
+                    addition = new Addition();
+                    addition.setQualifiedName(qualifiedName);
+                    additions.add(addition);
+                }
+                RouteClass routeClass = new RouteClass();
+                routeClass.setClassName(ClassName.get(typeElement));
+                routeClass.setDesc(route.desc());
+                routeClass.setPath(route.path());
+                routeClass.setVersion(route.version());
+                addition.setRouteClass(routeClass);
+
             }
         }
+    }
 
-        if (!routerMap.isEmpty()) {
-            logger.info(moduleName + " init ...");
-            // 生成清单文件
-            RouterDetail routerDetail = new RouterDetail();
-            routerDetail.setName(moduleName);
-
-            ClassName InterfaceName = ClassName.get(Constants.LOADER_INTERFACE_PACKAGE, Constants.LOADER_INTERFACE_NAME);
-
-            ParameterizedTypeName routerMapType = ParameterizedTypeName.get(
-                    ClassName.get(Map.class),
-                    ClassName.get(String.class),
-                    ClassName.get(RouteEntity.class)
-            );
-
-            ParameterSpec parameterSpec = ParameterSpec.builder(routerMapType, "root").build();
-
-            MethodSpec.Builder loadIntoBuilder = MethodSpec.methodBuilder(Constants.LOADER_INTERFACE_LOADINTO)
-                    .addAnnotation(Override.class)
-                    .addModifiers(Modifier.PUBLIC)
-                    .addParameter(parameterSpec);
-
-            for (Map.Entry<TypeElement, Route> entry : routerMap.entrySet()) {
-                TypeElement element = entry.getKey();
-                Route value = entry.getValue();
-                loadIntoBuilder.addStatement("root.put($S, new $T($T.class, $S, $S))", value.path(), RouteEntity.class, ClassName.get(element), value.desc(), value.version());
-
-                // 输出路由清单
-                RouterDetail.Path path = new RouterDetail.Path(ClassName.get(element).packageName() + ClassName.get(element).simpleName());
-                path.setPath(value.path(), moduleName, Constants.ROUTER_PROTOCOL);
-                path.addParams("version", value.version());
-                path.setDesc(value.desc());
-                routerDetail.addPath(path);
+    public Addition findAddition(List<Addition> additions, String qualifiedName) {
+        for (Addition addition : additions) {
+            if (addition.getQualifiedName().equals(qualifiedName)) {
+                return addition;
             }
-
-            // 写入当前编译
-            MethodSpec loadInto = loadIntoBuilder.build();
-
-            MethodSpec getModuleName = MethodSpec.methodBuilder(Constants.LOADER_INTERFACE_GET_MODULE_NAME)
-                    .addAnnotation(Override.class)
-                    .addModifiers(Modifier.PUBLIC)
-                    .addStatement("return $S", moduleName)
-                    .returns(String.class)
-                    .build();
-
-            TypeSpec typeSpec = TypeSpec.classBuilder(Constants.ROUTER_LOADER_CLASS_NAME + moduleName)
-                    .addSuperinterface(InterfaceName)
-                    .addModifiers(Modifier.PUBLIC)
-                    .addMethod(loadInto)
-                    .addMethod(getModuleName)
-                    .build();
-
-            JavaFile javaFile = JavaFile.builder(Constants.ROUTER_LOADER_PACKAGE, typeSpec)
-                    .build();
-
-            javaFile.writeTo(filer);
-
-            logger.infoLine("生成类信息");
-            logger.info(typeSpec.toString());
-            logger.infoLine("");
-            logger.info(moduleName + " success !!! ");
-
-            // 保存清单文件
-            save(JSON.toJSONString(routerDetail, true));
         }
+        return null;
+    }
+
+    private boolean checkIsSubClassOf(Element element, String... superClasses) {
+        Elements elementUtils = processingEnv.getElementUtils();
+        Types typeUtils = processingEnv.getTypeUtils();
+        for (String clazz : superClasses) {
+            try {
+                boolean isSubType = typeUtils.isSubtype(element.asType(), elementUtils.getTypeElement(clazz).asType());
+                if (isSubType) return true;
+            } catch (Throwable throwable) {
+                logger.info(throwable.getMessage());
+                continue;
+            }
+        }
+        return false;
     }
 
     private void save(String detail) {
@@ -187,6 +327,7 @@ public class RouterProcess extends AbstractProcessor {
     private Set<Class<? extends Annotation>> getSupportedAnnotations() {
         Set<Class<? extends Annotation>> annotations = new LinkedHashSet<>();
         annotations.add(Route.class);
+        annotations.add(Autowired.class);
         return annotations;
     }
 }
