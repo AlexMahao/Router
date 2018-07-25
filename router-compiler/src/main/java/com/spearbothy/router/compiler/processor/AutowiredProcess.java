@@ -3,6 +3,7 @@ package com.spearbothy.router.compiler.processor;
 import com.google.auto.service.AutoService;
 import com.spearbothy.router.annotation.Autowired;
 import com.spearbothy.router.compiler.entity.AutowiredDetail;
+import com.spearbothy.router.compiler.util.BundleStateHelper;
 import com.spearbothy.router.compiler.util.Constants;
 import com.spearbothy.router.compiler.util.Logger;
 import com.squareup.javapoet.ClassName;
@@ -61,13 +62,12 @@ public class AutowiredProcess extends AbstractProcessor {
         return new HashSet<>(Collections.singletonList(Autowired.class.getCanonicalName()));
     }
 
-
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         Set<? extends Element> autowireElements = roundEnvironment.getElementsAnnotatedWith(Autowired.class);
 
+        // 查询带有注解的对象
         List<AutowiredDetail> autowiredDetails = new ArrayList<>();
-
         for (Element element : autowireElements) {
             // 检查element的类型
             if (!checkAnnotationValid(element, Autowired.class)) {
@@ -77,18 +77,13 @@ public class AutowiredProcess extends AbstractProcessor {
             TypeElement typeElement = (TypeElement) variableElement.getEnclosingElement();
             // 全路径类名
             String qualifiedName = typeElement.getQualifiedName().toString();
-            logger.info("autowiredDetail:" + qualifiedName);
             if (checkIsSubClassOf(typeElement, Constants.CLASS_ACTIVITY, Constants.CLASS_FRAGMENT_ACTIVITY)) {
-                logger.info("addAutowiredDetail:" + qualifiedName);
                 addAutowiredDetail(autowiredDetails, qualifiedName, variableElement);
             }
-
         }
 
-        logger.info("autowiredDetail:" + autowiredDetails.toString());
-
+        // 生成代码
         ClassName bundleClass = ClassName.get("android.os", "Bundle");
-
         for (AutowiredDetail detail : autowiredDetails) {
             // 生成java文件
             // 构造 onSaveInstance(Activity instance, Bundle outState){

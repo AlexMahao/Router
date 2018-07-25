@@ -35,5 +35,5 @@ public class Constants {
 
     public static final String CLASS_FRAGMENT_ACTIVITY = "android.support.v4.app.FragmentActivity";
 
-    public static final String GENERATED_FILE_SUFFIX = "AutoSaveState";
+    public static final String GENERATED_FILE_SUFFIX = "$$RouteAutowired";
 }

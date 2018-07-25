@@ -1,4 +1,4 @@
-package com.spearbothy.router.compiler.processor;
+package com.spearbothy.router.compiler.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
@@ -6,10 +6,9 @@ import com.squareup.javapoet.MethodSpec;
 
 import javax.lang.model.element.Element;
 
-class BundleStateHelper {
+public class BundleStateHelper {
 
-
-    static MethodSpec.Builder statementSaveValueIntoBundle(MethodSpec.Builder methodBuilder, Element element, String instance, String bundleName) {
+    public static MethodSpec.Builder statementSaveValueIntoBundle(MethodSpec.Builder methodBuilder, Element element, String instance, String bundleName) {
         String statement = null;
         String varName = element.getSimpleName().toString();
 
@@ -125,7 +124,7 @@ class BundleStateHelper {
         return methodBuilder;
     }
 
-    static MethodSpec.Builder statementGetValueFromBundle(MethodSpec.Builder methodBuilder, Element element, String instance, String bundleName) {
+    public static MethodSpec.Builder statementGetValueFromBundle(MethodSpec.Builder methodBuilder, Element element, String instance, String bundleName) {
         String statement = null;
         String varName = element.getSimpleName().toString();
 
