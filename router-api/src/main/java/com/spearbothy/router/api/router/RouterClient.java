@@ -70,7 +70,7 @@ public class RouterClient {
             if (request.getCallback() != null) {
                 request.getCallback().onSuccess();
             }
-            startActivity(request, response.getEntity());
+            startActivity(request, response.getResult());
         } else {
             if (request.getCallback() != null) {
                 request.getCallback().onError(response);

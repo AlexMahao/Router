@@ -24,7 +24,7 @@ public class Response {
     private String errorMessage;
 
     // 查询结果
-    private RouteAddition entity;
+    private RouteAddition result;
 
 
     public int getErrorCode() {
@@ -35,12 +35,12 @@ public class Response {
         this.errorCode = errorCode;
     }
 
-    public RouteAddition getEntity() {
-        return entity;
+    public RouteAddition getResult() {
+        return result;
     }
 
-    public void setEntity(RouteAddition entity) {
-        this.entity = entity;
+    public void setResult(RouteAddition result) {
+        this.result = result;
     }
 
     public void setError(int errorCode, String errorMessage) {
@@ -50,7 +50,7 @@ public class Response {
 
     public void setSuccess(RouteAddition entity) {
         this.errorCode = CODE_SUCCESS;
-        this.entity = entity;
+        this.result = entity;
     }
 
     public String getErrorMessage() {
@@ -62,6 +62,6 @@ public class Response {
     }
 
     public boolean isSuccess() {
-        return errorCode == CODE_SUCCESS && entity != null;
+        return errorCode == CODE_SUCCESS && result != null;
     }
 }

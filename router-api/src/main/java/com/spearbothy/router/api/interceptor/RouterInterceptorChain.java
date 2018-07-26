@@ -6,7 +6,6 @@ import com.spearbothy.router.api.entity.RouteAddition;
 import com.spearbothy.router.api.router.Response;
 import com.spearbothy.router.api.router.RouterClient;
 import com.spearbothy.router.api.router.RouterRequest;
-import com.spearbothy.router.entity.RouteEntity;
 
 /**
  *

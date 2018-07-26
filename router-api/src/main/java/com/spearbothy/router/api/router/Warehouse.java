@@ -5,11 +5,8 @@ import com.spearbothy.router.api.entity.ModuleEntity;
 import com.spearbothy.router.api.entity.RouteAddition;
 import com.spearbothy.router.api.interceptor.Interceptor;
 import com.spearbothy.router.api.util.Logger;
-import com.spearbothy.router.entity.RouteEntity;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * @author mahao
