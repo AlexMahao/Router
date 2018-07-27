@@ -23,7 +23,7 @@ class RouteAutowriedTransform extends Transform {
      */
     @Override
     String getName() {
-        return "saveState"
+        return "routeAutowired"
     }
 
     @Override

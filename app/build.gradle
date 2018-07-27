@@ -32,10 +32,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation deps.support.appcompat
-    api "com.spearbothy:router-api:0.0.1"
-//    api "com.spearbothy:router-annotation:0.0.2"
-    // 测试多module的情况
-//    implementation project(':test')
 }
 
 

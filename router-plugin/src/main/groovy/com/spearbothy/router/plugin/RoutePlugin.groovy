@@ -33,15 +33,16 @@ class RoutePlugin implements Plugin<Project> {
 //
 //        }
         project.dependencies {
-            annotationProcessor 'com.spearbothy:router-compiler:0.0.1'
+            annotationProcessor 'com.spearbothy:router-compiler:0.0.1' // 代码生成
+            api "com.spearbothy:router-api:0.0.1" // 公开api
+            api 'com.spearbothy:router-annotation:0.0.3' // 注解
         }
         // 注册Transform
         project.android.registerTransform(new RouteAutowriedTransform(project))
 
         project.afterEvaluate {
-
-
-
+            // up-to-date
+            project.tasks.findByName("transformClassesWithRouteAutowiredForRelease").outputs.upToDateWhen { false }
         }
     }
 
