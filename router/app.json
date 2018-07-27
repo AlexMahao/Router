@@ -9,18 +9,6 @@
 			"version":"1.0.0"
 		},
 		{
-			"className":"com.spearbothy.router.Main2Activity",
-			"desc":"第二个页面",
-			"params":[
-				{
-					"fieldName":"index",
-					"fieldType":"int"
-				}
-			],
-			"path":"router://app/main2",
-			"version":"1.0.0"
-		},
-		{
 			"className":"com.spearbothy.router.ParamsActivity",
 			"desc":"演示参数传值页面",
 			"params":[

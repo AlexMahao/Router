@@ -1,9 +1,5 @@
 apply plugin: 'com.android.library'
-//apply plugin: 'plugin.router'
-
-//SRoute{
-//    moduleName="app"
-//}
+apply plugin: 'plugin.router'
 
 android {
     compileSdkVersion config.compileSdkVersion
@@ -33,6 +29,4 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation deps.support.appcompat
-    // 页面跳转的api
-    api deps.router_api
 }

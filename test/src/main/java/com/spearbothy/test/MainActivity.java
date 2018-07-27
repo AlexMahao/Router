@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.spearbothy.router.annotation.Route;
 
-@Route(path = "/main", desc = "测试的首页面", version = "1.0.0")
+@Route(path = "/main", desc = "module 测试页面", version = "1.0.0")
 public class MainActivity extends AppCompatActivity {
 
     @Override

@@ -23,12 +23,12 @@ public class MainActivity extends AppCompatActivity {
         // 设置debug模式
         Router.setDebug(BuildConfig.DEBUG);
         // 暂时不做参数校验，没想好怎么判断
-        Router.addInterceptor(new VersionInterceptor());
+//        Router.addInterceptor(new VersionInterceptor());
     }
 
     public void go(View view) {
         Router.with(this)
-                .url("router://app/main2?version=1.0&index=2")
+                .url("router://app/params?version=1.0&index=2")
                 .start(new ResultCallback() {
                     @Override
                     public void onSuccess() {
