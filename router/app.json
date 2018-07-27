@@ -9,6 +9,13 @@
 			"version":"1.0.0"
 		},
 		{
+			"className":"com.spearbothy.router.LoginActivity",
+			"desc":"登录页面",
+			"params":[],
+			"path":"router://app/login",
+			"version":"1.0.0"
+		},
+		{
 			"className":"com.spearbothy.router.ParamsActivity",
 			"desc":"演示参数传值页面",
 			"params":[

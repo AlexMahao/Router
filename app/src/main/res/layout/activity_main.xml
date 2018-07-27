@@ -11,6 +11,11 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="goNeedLogin"
+        android:text="跳转本module中的页面，带有参数，需要登录" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:onClick="goTest"
         android:text="跳转到test module!" />
 </LinearLayout>

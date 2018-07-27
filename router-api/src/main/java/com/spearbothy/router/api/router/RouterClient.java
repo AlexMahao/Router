@@ -65,6 +65,11 @@ public class RouterClient {
 
     static void process(RouterRequest request) {
         Response response = new RouterInterceptorChain(0, request).proceed(request);
+
+        if (response == null) {
+            return;
+        }
+
         if (response.isSuccess()) {
             // 检查activity是否能跳转
             if (request.getCallback() != null) {

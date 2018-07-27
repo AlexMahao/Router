@@ -47,7 +47,6 @@ public class RouterRequest {
             this.path = url.getPath();
             loadUrlParams(url.getQuery(), params);
             Logger.info("url 解析结果：" + toString());
-
             RouterClient.process(this);
         } catch (MalformedURLException e) {
             Logger.error("协议不合法：" + getUrl(), e);
@@ -58,6 +57,7 @@ public class RouterRequest {
             }
         }
     }
+
 
     private void loadUrlParams(String param, Map<String, String> map) {
         if (param == null) {
