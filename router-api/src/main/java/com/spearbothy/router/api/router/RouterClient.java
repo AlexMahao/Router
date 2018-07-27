@@ -6,7 +6,7 @@ import android.content.Intent;
 
 import com.spearbothy.router.api.Constants;
 import com.spearbothy.router.api.entity.ModuleEntity;
-import com.spearbothy.router.api.entity.RouteAddition;
+import com.spearbothy.router.api.entity.ResponseResult;
 import com.spearbothy.router.api.interceptor.RouterInterceptorChain;
 import com.spearbothy.router.api.util.ClassUtils;
 import com.spearbothy.router.api.util.Logger;
@@ -78,12 +78,13 @@ public class RouterClient {
         }
     }
 
-    private static void startActivity(RouterRequest request, RouteAddition meta) {
+    private static void startActivity(RouterRequest request, ResponseResult result) {
         Context context = request.getContext();
-        Intent intent = new Intent(context, meta.getClazz());
+        Intent intent = new Intent(context, result.getAddition().getClazz());
         if (!(context instanceof Activity)) {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
+        intent.putExtra("router_bundle", result.getBundle());
         context.startActivity(intent);
     }
 }

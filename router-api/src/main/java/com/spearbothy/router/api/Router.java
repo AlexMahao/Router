@@ -3,6 +3,7 @@ package com.spearbothy.router.api;
 import android.content.Context;
 
 import com.spearbothy.router.api.interceptor.Interceptor;
+import com.spearbothy.router.api.interceptor.VerifyParamsInterceptor;
 import com.spearbothy.router.api.router.RouterClient;
 import com.spearbothy.router.api.router.RouterRequest;
 import com.spearbothy.router.api.util.RouterURLStreamHandlerFactory;
@@ -23,6 +24,7 @@ public class Router {
         // 扩展url解析，自定义router://
         URL.setURLStreamHandlerFactory(new RouterURLStreamHandlerFactory());
         RouterClient.init(context);
+        addInterceptor(new VerifyParamsInterceptor());
     }
 
     public static RouterRequest with(Context context) {

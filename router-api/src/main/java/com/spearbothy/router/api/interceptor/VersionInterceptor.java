@@ -2,6 +2,7 @@ package com.spearbothy.router.api.interceptor;
 
 import android.text.TextUtils;
 
+import com.spearbothy.router.api.entity.ResponseResult;
 import com.spearbothy.router.api.entity.RouteAddition;
 import com.spearbothy.router.api.router.Response;
 
@@ -17,8 +18,8 @@ public class VersionInterceptor implements Interceptor {
     public Response intercept(Chain chain) {
         Response response = chain.proceed(chain.request());
         if (response.isSuccess()) {
-            RouteAddition entity = response.getResult();
-            String activityVersion = entity.getVersion();
+            ResponseResult result = response.getResult();
+            String activityVersion = result.getAddition().getVersion();
             String pathVersion = chain.request().getParams().get("version");
             if (!isSupportVersion(activityVersion, pathVersion)) {
                 response.setError(Response.CODE_FAIL_PROTOCOL, "跳转地址版本过低（" + pathVersion + "），不再支持，当前协议版本：" + activityVersion + "");

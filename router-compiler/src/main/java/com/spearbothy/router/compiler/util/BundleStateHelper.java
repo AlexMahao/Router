@@ -10,7 +10,6 @@ public class BundleStateHelper {
 
     public static MethodSpec.Builder statementSaveValueIntoBundle(MethodSpec.Builder methodBuilder,String fieldName, String fieldType, String instance, String bundleName) {
         String statement = null;
-      
         switch (fieldType) {
             case "int":
                 statement = String.format("%s.putInt(%s, %s)", bundleName, "\"" + fieldName + "\"", getStatement(instance, fieldName));
@@ -41,73 +40,6 @@ public class BundleStateHelper {
                 break;
             case "boolean":
                 statement = String.format("%s.putBoolean(%s, %s)", bundleName, "\"" + fieldName + "\"",
-                        getStatement(instance, fieldName));
-                break;
-            case "java.lang.Integer":
-            case "java.lang.Long":
-            case "java.lang.Character":
-            case "java.lang.Short":
-            case "java.lang.Byte":
-            case "java.lang.Float":
-            case "java.lang.Double":
-            case "java.lang.Boolean":
-                statement = String.format("%s.putSerializable(%s, %s)", bundleName, "\"" + fieldName + "\"",
-                        getStatement(instance, fieldName));
-                break;
-            case "java.lang.String":
-                statement = String.format("%s.putString(%s, %s)", bundleName, "\"" + fieldName + "\"",
-                        getStatement(instance, fieldName));
-                break;
-            case "java.io.Serializable":
-                statement = String.format("%s.putSerializable(%s, %s)", bundleName, "\"" + fieldName + "\"",
-                        getStatement(instance, fieldName));
-                break;
-            case "android.os.IBinder":
-                statement = String.format("%s.putBinder(%s, %s)", bundleName, "\"" + fieldName + "\"",
-                        getStatement(instance, fieldName));
-                break;
-            case "android.os.Bundle":
-                statement = String.format("%s.putBundle(%s, %s)", bundleName, "\"" + fieldName + "\"",
-                        getStatement(instance, fieldName));
-                break;
-            case "java.lang.CharSequence":
-                statement = String.format("%s.putCharSequence(%s, %s)", bundleName, "\"" + fieldName + "\"",
-                        getStatement(instance, fieldName));
-                break;
-            case "android.os.Parcelable":
-                statement = String.format("%s.putParcelable(%s, %s)", bundleName, "\"" + fieldName + "\"",
-                        getStatement(instance, fieldName));
-                break;
-            case "android.util.Size":
-                statement = String.format("%s.putSize(%s, %s)", bundleName, "\"" + fieldName + "\"",
-                        getStatement(instance, fieldName));
-                break;
-            case "android.util.SizeF":
-                statement = String.format("%s.putSizeF(%s, %s)", bundleName, "\"" + fieldName + "\"",
-                        getStatement(instance, fieldName));
-                break;
-            case "android.os.Parcelable[]":
-                statement = String.format("%s.putParcelableArray(%s, %s)", bundleName, "\"" + fieldName + "\"",
-                        getStatement(instance, fieldName));
-                break;
-            case "byte[]":
-                statement = String.format("%s.putByteArray(%s, %s)", bundleName, "\"" + fieldName + "\"",
-                        getStatement(instance, fieldName));
-                break;
-            case "short[]":
-                statement = String.format("%s.putShortArray(%s, %s)", bundleName, "\"" + fieldName + "\"",
-                        getStatement(instance, fieldName));
-                break;
-            case "char[]":
-                statement = String.format("%s.putCharArray(%s, %s)", bundleName, "\"" + fieldName + "\"",
-                        getStatement(instance, fieldName));
-                break;
-            case "float[]":
-                statement = String.format("%s.putFloatArray(%s, %s)", bundleName, "\"" + fieldName + "\"",
-                        getStatement(instance, fieldName));
-                break;
-            case "java.lang.CharSequence[]":
-                statement = String.format("%s.putCharSequenceArray(%s, %s)", bundleName, "\"" + fieldName + "\"",
                         getStatement(instance, fieldName));
                 break;
             default:
@@ -159,80 +91,7 @@ public class BundleStateHelper {
                 statement = assignStatement(instance, fieldName,
                         String.format("%s.getBoolean(%s)", bundleName, "\"" + fieldName + "\""));
                 break;
-            case "java.lang.Integer":
-            case "java.lang.Long":
-            case "java.lang.Character":
-            case "java.lang.Short":
-            case "java.lang.Byte":
-            case "java.lang.Float":
-            case "java.lang.Double":
-            case "java.lang.Boolean":
-                statement = assignStatement(instance, fieldName,
-                        String.format(
-                                "(%s)%s.getSerializable(%s)",
-                                fieldType,
-                                bundleName, "\"" + fieldName + "\""
-                        )
-                );
-                break;
-            case "java.lang.String":
-                statement = assignStatement(instance, fieldName,
-                        String.format("%s.getString(%s)", bundleName, "\"" + fieldName + "\""));
-                break;
-            case "java.io.Serializable":
-                statement = assignStatement(instance, fieldName,
-                        String.format("%s.getSerializable(%s)", bundleName, "\"" + fieldName + "\""));
-                break;
-            case "android.os.IBinder":
-                statement = assignStatement(instance, fieldName,
-                        String.format("%s.getBinder(%s)", bundleName, "\"" + fieldName + "\""));
-                break;
-            case "android.os.Bundle":
-                statement = assignStatement(instance, fieldName,
-                        String.format("%s.getBundle(%s)", bundleName, "\"" + fieldName + "\""));
-                break;
-            case "java.lang.CharSequence":
-                statement = assignStatement(instance, fieldName,
-                        String.format("%s.getCharSequence(%s)", bundleName, "\"" + fieldName + "\""));
-                break;
-            case "android.os.Parcelable":
-                statement = assignStatement(instance, fieldName,
-                        String.format("%s.getParcelable(%s)", bundleName, "\"" + fieldName + "\""));
-                break;
-            case "android.util.Size":
-                statement = assignStatement(instance, fieldName,
-                        String.format("%s.getSize(%s)", bundleName, "\"" + fieldName + "\""));
-                break;
-            case "android.util.SizeF":
-                statement = assignStatement(instance, fieldName,
-                        String.format("%s.getSizeF(%s)", bundleName, "\"" + fieldName + "\""));
-                break;
-            case "android.os.Parcelable[]":
-                statement = assignStatement(instance, fieldName,
-                        String.format("%s.getParcelableArray(%s)", bundleName, "\"" + fieldName + "\""));
-                break;
-            case "byte[]":
-                statement = assignStatement(instance, fieldName,
-                        String.format("%s.getByteArray(%s)", bundleName, "\"" + fieldName + "\""));
-                break;
-            case "short[]":
-                statement = assignStatement(instance, fieldName,
-                        String.format("%s.getShortArray(%s)", bundleName, "\"" + fieldName + "\""));
-                break;
-            case "char[]":
-                statement = assignStatement(instance, fieldName,
-                        String.format("%s.getCharArray(%s)", bundleName, "\"" + fieldName + "\""));
-                break;
-            case "float[]":
-                statement = assignStatement(instance, fieldName,
-                        String.format("%s.getFloatArray(%s)", bundleName, "\"" + fieldName + "\""));
-                break;
-            case "java.lang.CharSequence[]":
-                statement = assignStatement(instance, fieldName,
-                        String.format("%s.getCharSequenceArray(%s)", bundleName, "\"" + fieldName + "\""));
-                break;
             default:
-
                 statement = assignStatement(instance, fieldName, String.format(
                         "$T.<%s>parseObject(%s.getString(%s), new $T<%s>(){}.getType())",
                         fieldType,

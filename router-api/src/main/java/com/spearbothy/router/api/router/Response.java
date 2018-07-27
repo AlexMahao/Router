@@ -1,5 +1,6 @@
 package com.spearbothy.router.api.router;
 
+import com.spearbothy.router.api.entity.ResponseResult;
 import com.spearbothy.router.api.entity.RouteAddition;
 
 /**
@@ -19,12 +20,14 @@ public class Response {
 
     public static final int CODE_FAIL_VERSION_NOT_SUPPORT = -3;
 
+    public static final int CODE_FAIL_PARAMS_NOT_VALID = -4;
+
     private int errorCode;
 
     private String errorMessage;
 
     // 查询结果
-    private RouteAddition result;
+    private ResponseResult result;
 
 
     public int getErrorCode() {
@@ -35,11 +38,11 @@ public class Response {
         this.errorCode = errorCode;
     }
 
-    public RouteAddition getResult() {
+    public ResponseResult getResult() {
         return result;
     }
 
-    public void setResult(RouteAddition result) {
+    public void setResult(ResponseResult result) {
         this.result = result;
     }
 
@@ -48,7 +51,7 @@ public class Response {
         this.errorMessage = errorMessage;
     }
 
-    public void setSuccess(RouteAddition entity) {
+    public void setSuccess(ResponseResult entity) {
         this.errorCode = CODE_SUCCESS;
         this.result = entity;
     }

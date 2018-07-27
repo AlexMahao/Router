@@ -27,8 +27,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void go(View view) {
         Router.with(this)
-                .url("router://app/main2?version=1.0")
-                .start();
+                .url("router://app/main2?version=1.0&index=2")
+                .start(new ResultCallback() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(getApplicationContext(), "页面跳转成功", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(Response response) {
+                        Toast.makeText(getApplicationContext(), response.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 

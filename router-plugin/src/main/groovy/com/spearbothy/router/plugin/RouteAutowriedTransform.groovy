@@ -53,6 +53,11 @@ class RouteAutowriedTransform extends Transform {
     }
 
     @Override
+    boolean isCacheable() {
+        return true
+    }
+
+    @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         ClassPool classPool = ClassPool.getDefault()
         def classPath = []
@@ -206,7 +211,7 @@ class RouteAutowriedTransform extends Transform {
                 } else {
                     Logger.info("${ctClass.simpleName}  onCreate exist, insert before")
                     // 原来的 Activity 有 onCreate 方法
-                    restoreCtMethod.insertBefore("if ($Constant.ENABLE_SAVE_STATE && \$1 != null) ${ctClass.name}${Constant.GENERATED_FILE_SUFFIX}.onRestoreInstanceState(this, \$1);")
+                    restoreCtMethod.insertBefore("if ($Constant.ENABLE_SAVE_STATE){ if(\$1 != null) { ${ctClass.name}${Constant.GENERATED_FILE_SUFFIX}.onRestoreInstanceState(this, \$1);} else { ${ctClass.name}${Constant.GENERATED_FILE_SUFFIX}.onRestoreInstanceState(this, getIntent().getBundleExtra(\"router_bundle\"));}}")
                 }
             }
         }
@@ -222,7 +227,13 @@ class RouteAutowriedTransform extends Transform {
     // Activity onCreate 不存在的情况下创建 onCreate 方法
     String generateActivityRestoreMethod(String delegatedName) {
         return "protected void onCreate(Bundle savedInstanceState) {\n" +
-                "if ($Constant.ENABLE_SAVE_STATE && savedInstanceState != null) ${delegatedName}.onRestoreInstanceState(this, savedInstanceState);" + "\n" +
+                "if ($Constant.ENABLE_SAVE_STATE) { " +
+                "\tif(saveInstance == null) { " +
+                "\t\t${delegatedName}.onRestoreInstanceState(this, getIntent().getBundleExtra(\"router_bundle\")); " +
+                "\t} else { " +
+                "\t\t${delegatedName}.onRestoreInstanceState(this, savedInstanceState); " +
+                "\t}" +
+                "}" + "\n" +
                 "super.onCreate(savedInstanceState);\n" +
                 "}"
     }

@@ -2,14 +2,15 @@ package com.spearbothy.router.api.interceptor;
 
 import com.spearbothy.router.api.Constants;
 import com.spearbothy.router.api.entity.ModuleEntity;
+import com.spearbothy.router.api.entity.ResponseResult;
 import com.spearbothy.router.api.entity.RouteAddition;
 import com.spearbothy.router.api.router.Response;
 import com.spearbothy.router.api.router.RouterClient;
 import com.spearbothy.router.api.router.RouterRequest;
 
 /**
- *
  * Interceptor 中可以添加对自定义参数的处理
+ *
  * @author mahao
  * @date 2018/7/10 下午3:24
  * @email zziamahao@163.com
@@ -53,7 +54,7 @@ public class RouterInterceptorChain implements Interceptor.Chain {
                 if (route == null) {
                     response.setError(Response.CODE_FAIL_ROUTER_NOT_FOUND, "路径不匹配");
                 } else {
-                    response.setSuccess(route);
+                    response.setSuccess(new ResponseResult(route));
                 }
             }
         } else {

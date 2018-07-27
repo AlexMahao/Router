@@ -201,6 +201,7 @@ public class RouterProcess extends AbstractProcessor {
                 BundleStateHelper.statementGetValueFromBundle(restoreBuilder, field.getFieldName(), field.getFieldType(), "instance", "outState");
             }
             MethodSpec restoreMethod = restoreBuilder.build();
+
             //生成类
             TypeSpec saveStateClass = TypeSpec.classBuilder(addition.getSimpleName() + Constants.GENERATED_FILE_SUFFIX)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
