@@ -20,9 +20,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // 初始化module
         Router.init(getApplicationContext());
-        Router.addInterceptor(new VersionInterceptor());
         // 设置debug模式
         Router.setDebug(BuildConfig.DEBUG);
+        // 暂时不做参数校验，没想好怎么判断
+        Router.addInterceptor(new VersionInterceptor());
     }
 
     public void go(View view) {

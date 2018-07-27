@@ -1,11 +1,13 @@
 package com.spearbothy.router.compiler.processor;
 
+import com.alibaba.fastjson.JSON;
 import com.google.auto.service.AutoService;
 import com.spearbothy.router.annotation.Autowired;
 import com.spearbothy.router.annotation.Route;
 import com.spearbothy.router.compiler.entity.Addition;
 import com.spearbothy.router.compiler.entity.AutowiredField;
 import com.spearbothy.router.compiler.entity.RouteClass;
+import com.spearbothy.router.compiler.entity.RouterDetail;
 import com.spearbothy.router.compiler.util.BundleStateHelper;
 import com.spearbothy.router.compiler.util.Constants;
 import com.spearbothy.router.compiler.util.Logger;
@@ -89,6 +91,7 @@ public class RouterProcess extends AbstractProcessor {
             try {
                 generatorAutowiredFile(additionList);
                 generatorRouteFile(additionList);
+                generatorMainfest(additionList);
             } catch (IOException e) {
                 logger.error(e);
             }
@@ -97,7 +100,31 @@ public class RouterProcess extends AbstractProcessor {
         return false;
     }
 
-    private void generatorRouteFile(List<Addition> additionList) throws IOException{
+    private void generatorMainfest(List<Addition> additionList) {
+        RouterDetail detail = new RouterDetail();
+        detail.setName(moduleName);
+
+        for (Addition addition : additionList) {
+            RouterDetail.Path path = new RouterDetail.Path(addition.getQualifiedName());
+            path.setPath(addition.getRouteClass().getPath(), moduleName, Constants.ROUTER_PROTOCOL);
+            path.setDesc(addition.getRouteClass().getDesc());
+            path.setVersion(addition.getRouteClass().getVersion());
+            path.setParams(addition.getAutowiredFields());
+            detail.addPath(path);
+        }
+
+        try {
+            List<String> lines = Arrays.asList(JSON.toJSONString(detail, true));
+            Files.createDirectories(Paths.get(Constants.ROUTER_DETAIL_DIR));
+            Path file = Paths.get(Constants.ROUTER_DETAIL_DIR + File.separator + moduleName + ".json");
+            logger.info("协议清单文件 PATH: " + file.toAbsolutePath());
+            Files.write(file, lines, Charset.forName("UTF-8"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void generatorRouteFile(List<Addition> additionList) throws IOException {
         ClassName InterfaceName = ClassName.get(Constants.LOADER_INTERFACE_PACKAGE, Constants.LOADER_INTERFACE_NAME);
 
         ClassName routeAddition = ClassName.get(Constants.ROUTER_PACKAGE + ".api.entity", "RouteAddition");
@@ -119,8 +146,8 @@ public class RouterProcess extends AbstractProcessor {
             RouteClass routeClass = addition.getRouteClass();
             if (routeClass != null) {
                 loadIntoBuilder.addStatement("routeAddition = new $T($T.class, $S, $S)", routeAddition, routeClass.getClassName(), routeClass.getDesc(), routeClass.getVersion());
-                for (AutowiredField field : addition.getAutowiredFields()){
-                    loadIntoBuilder.addStatement("routeAddition.addAutowiredField($S, $S)", field.getFieldName(),field.getFieldType());
+                for (AutowiredField field : addition.getAutowiredFields()) {
+                    loadIntoBuilder.addStatement("routeAddition.addAutowiredField($S, $S)", field.getFieldName(), field.getFieldType());
                 }
                 loadIntoBuilder.addStatement("root.put($S, routeAddition)", routeClass.getPath());
             }
@@ -138,6 +165,7 @@ public class RouterProcess extends AbstractProcessor {
 //            path.setDesc(value.desc());
 //            routerDetail.addPath(path);
 //        }
+
 
         // 写入当前编译
         MethodSpec loadInto = loadIntoBuilder.build();
@@ -302,17 +330,6 @@ public class RouterProcess extends AbstractProcessor {
         return false;
     }
 
-    private void save(String detail) {
-        try {
-            List<String> lines = Arrays.asList(detail);
-            Files.createDirectories(Paths.get(Constants.ROUTER_DETAIL_DIR));
-            Path file = Paths.get(Constants.ROUTER_DETAIL_DIR + File.separator + moduleName + ".json");
-            logger.info("协议清单文件 PATH: " + file.toAbsolutePath());
-            Files.write(file, lines, Charset.forName("UTF-8"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {

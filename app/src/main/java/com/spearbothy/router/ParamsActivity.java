@@ -8,8 +8,18 @@ import android.widget.Toast;
 import com.spearbothy.router.annotation.Autowired;
 import com.spearbothy.router.annotation.Route;
 
-@Route(path = "/main2", desc = "第二个页面", version = "1.0.0")
-public class Main2Activity extends AppCompatActivity {
+/**
+ * 演示传值
+ *  - 支持八种基本类型+String
+ *  - 支持自动获取
+ *  - 异常销毁和恢复
+ *
+ * @author mahao
+ * @date 2018/7/27 上午11:38
+ * @email zziamahao@163.com
+ */
+@Route(path = "/params", desc = "演示参数传值页面", version = "1.0.0")
+public class ParamsActivity extends AppCompatActivity {
 
     @Autowired
     public int index = 1;
@@ -18,7 +28,6 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_params);
-
     }
 
     public void show(View view) {

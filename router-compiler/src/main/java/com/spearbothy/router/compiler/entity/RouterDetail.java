@@ -43,9 +43,11 @@ public class RouterDetail {
 
         private String path;
 
-        private Map<String, Object> params = new HashMap<>();
+        private List<AutowiredField> params = new ArrayList<>();
 
         private String desc;
+
+        private String version;
 
         public String getDesc() {
             return desc;
@@ -75,13 +77,20 @@ public class RouterDetail {
             this.path = protocol + "://" + moduleName + path;
         }
 
-        public Map<String, Object> getParams() {
+        public List<AutowiredField> getParams() {
             return params;
         }
 
-        public Path addParams(String key, Object value) {
-            params.put(key, value);
-            return this;
+        public void setParams(List<AutowiredField> params) {
+            this.params = params;
+        }
+
+        public String getVersion() {
+            return version;
+        }
+
+        public void setVersion(String version) {
+            this.version = version;
         }
     }
 }
