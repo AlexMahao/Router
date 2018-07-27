@@ -35,14 +35,6 @@ public class ModuleEntity {
     }
 
     @Override
-    public String toString() {
-        return "ModuleEntity{" +
-                "moduleName='" + moduleName + '\'' +
-                ", routeMap=" + routeMap +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -55,5 +47,13 @@ public class ModuleEntity {
     @Override
     public int hashCode() {
         return moduleName != null ? moduleName.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "ModuleEntity{" +
+                "moduleName='" + moduleName + '\'' +
+                ", routeMap=" + routeMap +
+                '}';
     }
 }

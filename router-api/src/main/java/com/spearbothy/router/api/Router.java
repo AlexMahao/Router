@@ -35,7 +35,6 @@ public class Router {
         RouterClient.getInstance().warehouse.addInterceptor(interceptor);
     }
 
-
     public static void setDebug(boolean debug) {
         DEBUG = debug;
     }

@@ -59,4 +59,13 @@ public class Addition {
     public void addAutowiredField(AutowiredField autowiredField) {
         autowiredFields.add(autowiredField);
     }
+
+    @Override
+    public String toString() {
+        return "Addition{" +
+                "qualifiedName='" + qualifiedName + '\'' +
+                ", routeClass=" + routeClass +
+                ", autowiredFields=" + autowiredFields +
+                '}';
+    }
 }

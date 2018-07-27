@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
 import dalvik.system.DexFile;
 
 /**
+ * 查找IRouterLoader下面的实现类 from ARouter
+ *
  * @author mahao
  * @date 2018/6/27 下午3:33
  * @email zziamahao@163.com
@@ -51,7 +53,7 @@ public class ClassUtils {
         final Set<String> classNames = new HashSet<>();
 
         List<String> paths = getSourcePaths(context);
-        Logger.info("查找router loader 类目录："+paths);
+        Logger.info("查找router loader 类目录：" + paths);
         for (final String path : paths) {
             DexFile dexfile = null;
 

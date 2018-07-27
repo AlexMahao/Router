@@ -61,4 +61,14 @@ public class RouteAddition {
     public void addAutowiredField(String fieldName, String fieldType) {
         autowiredFields.add(new AutowiredField(fieldName, fieldType));
     }
+
+    @Override
+    public String toString() {
+        return "RouteAddition{" +
+                "clazz=" + clazz +
+                ", desc='" + desc + '\'' +
+                ", version='" + version + '\'' +
+                ", autowiredFields=" + autowiredFields +
+                '}';
+    }
 }

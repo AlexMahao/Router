@@ -1,9 +1,7 @@
 package com.spearbothy.router.compiler.entity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author mahao
@@ -92,5 +90,24 @@ public class RouterDetail {
         public void setVersion(String version) {
             this.version = version;
         }
+
+        @Override
+        public String toString() {
+            return "Path{" +
+                    "className='" + className + '\'' +
+                    ", path='" + path + '\'' +
+                    ", params=" + params +
+                    ", desc='" + desc + '\'' +
+                    ", version='" + version + '\'' +
+                    '}';
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "RouterDetail{" +
+                "name='" + name + '\'' +
+                ", pathList=" + pathList +
+                '}';
     }
 }

@@ -15,8 +15,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface Autowired {
 
-    /**
-     * 注释
-     */
     String desc() default "";
 }

@@ -152,20 +152,6 @@ public class RouterProcess extends AbstractProcessor {
                 loadIntoBuilder.addStatement("root.put($S, routeAddition)", routeClass.getPath());
             }
         }
-//
-//        for (Map.Entry<TypeElement, Route> entry : routerMap.entrySet()) {
-//            TypeElement element = entry.getKey();
-//            Route value = entry.getValue();
-//            loadIntoBuilder.addStatement("root.put($S, new $T($T.class, $S, $S))", value.path(), RouteEntity.class, ClassName.get(element), value.desc(), value.version());
-//
-//            // 输出路由清单
-//            RouterDetail.Path path = new RouterDetail.Path(ClassName.get(element).packageName() + ClassName.get(element).simpleName());
-//            path.setPath(value.path(), moduleName, Constants.ROUTER_PROTOCOL);
-//            path.addParams("version", value.version());
-//            path.setDesc(value.desc());
-//            routerDetail.addPath(path);
-//        }
-
 
         // 写入当前编译
         MethodSpec loadInto = loadIntoBuilder.build();
@@ -254,7 +240,6 @@ public class RouterProcess extends AbstractProcessor {
         }
     }
 
-
     private void initAutowird(List<Addition> additionList, RoundEnvironment roundEnv) {
         Set<? extends Element> autowiredElements = roundEnv.getElementsAnnotatedWith(Autowired.class);
         if (autowiredElements != null && !autowiredElements.isEmpty()) {
@@ -280,8 +265,7 @@ public class RouterProcess extends AbstractProcessor {
         }
     }
 
-
-    public void initRoute(List<Addition> additions, RoundEnvironment roundEnv) {
+    private void initRoute(List<Addition> additions, RoundEnvironment roundEnv) {
         Set<? extends Element> routeElements = roundEnv.getElementsAnnotatedWith(Route.class);
         if (routeElements != null && !routeElements.isEmpty()) {
             for (Element element : routeElements) {
@@ -329,7 +313,6 @@ public class RouterProcess extends AbstractProcessor {
         }
         return false;
     }
-
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {

@@ -16,12 +16,11 @@ import java.util.ArrayList;
 
 public class Warehouse {
 
+    // 路由协议存放
     private ArrayList<ModuleEntity> routerModuleList = new ArrayList<>();
 
     // 拦截器
     private ArrayList<Interceptor> interceptors = new ArrayList<>();
-
-//    private Comparator<Interceptor> interceptorComparator = new InterceptorComparator();
 
     public void addModule(ModuleEntity moduleEntity, boolean force) {
         int index = routerModuleList.indexOf(moduleEntity);
@@ -67,8 +66,6 @@ public class Warehouse {
 
     public void addInterceptor(Interceptor interceptor) {
         interceptors.add(interceptor);
-        // 排序
-//        Collections.sort(interceptors, interceptorComparator);
     }
 
     public ArrayList<Interceptor> getInterceptor() {

@@ -27,4 +27,12 @@ public class AutowiredField {
     public void setFieldType(String fieldType) {
         this.fieldType = fieldType;
     }
+
+    @Override
+    public String toString() {
+        return "AutowiredField{" +
+                "fieldName='" + fieldName + '\'' +
+                ", fieldType='" + fieldType + '\'' +
+                '}';
+    }
 }
