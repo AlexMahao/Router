@@ -21,8 +21,6 @@ public class Router {
     public static boolean DEBUG = false;
 
     public static void init(Context context) {
-        // 扩展url解析，自定义router://
-        URL.setURLStreamHandlerFactory(new RouterURLStreamHandlerFactory());
         RouterClient.init(context);
         addInterceptor(new VerifyParamsInterceptor());
     }

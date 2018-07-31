@@ -58,7 +58,6 @@ public class VerifyParamsInterceptor implements Interceptor {
                         bundle.putLong(autowiredField.getFieldName(), Long.parseLong(paramsValue));
                         break;
                     case "char":
-
                         if (TextUtils.isEmpty(paramsValue) || paramsValue.length() > 1) {
                             throw new NumberFormatException();
                         } else {

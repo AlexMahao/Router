@@ -1,14 +1,15 @@
 package com.spearbothy.router.api.router;
 
 import android.content.Context;
+import android.text.TextUtils;
 
+import com.spearbothy.router.api.Constants;
 import com.spearbothy.router.api.ResultCallback;
-import com.spearbothy.router.api.util.Logger;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author mahao
@@ -17,10 +18,13 @@ import java.util.Map;
  */
 
 public class RouterRequest {
+
+    public static final String URL_PATTERN = "(router://)([a-zA-Z0-9]+)(/[a-zA-Z0-9]+)((\\?([a-zA-Z0-9]+=[a-zA-Z0-9]+&)*)?)";
+
     private Context context;
     private String url;
-    private String protocol;
-    private String host;
+    private String protocol = Constants.ROUTER_PROTOCOL;
+    private String module; // 模块名
     private String path;
     private Map<String, String> params = new HashMap<>();
     private ResultCallback callback;
@@ -40,22 +44,52 @@ public class RouterRequest {
 
     public void start(ResultCallback resultCallback) {
         callback = resultCallback;
-        try {
-            URL url = new URL(getUrl());
-            this.host = url.getHost();
-            this.protocol = url.getProtocol();
-            this.path = url.getPath();
-            loadUrlParams(url.getQuery(), params);
-            Logger.info("url 解析结果：" + toString());
+
+        if (initProtocol()) {
             RouterClient.process(this);
-        } catch (MalformedURLException e) {
-            Logger.error("协议不合法：" + getUrl(), e);
+        } else {
             if (callback != null) {
                 Response response = new Response();
                 response.setError(Response.CODE_FAIL_PROTOCOL, "协议不合法");
                 callback.onError(response);
             }
         }
+    }
+
+    private boolean initProtocol() {
+        if (TextUtils.isEmpty(url)) {
+            return !TextUtils.isEmpty(protocol) && !TextUtils.isEmpty(module) && !TextUtils.isEmpty(path);
+        } else {
+            String[] result = parserUrl(url);
+            if (result != null) {
+                protocol = result[0];
+                module = result[1];
+                path = result[2];
+                if (TextUtils.isEmpty(result[3])) {
+                    loadUrlParams(result[3].substring(1), params);
+                }
+            }
+        }
+        return false;
+    }
+
+    private String[] parserUrl(String url) {
+        if (url.contains("?") && !url.endsWith("&")) {
+            // 正则表达式实在不知道怎么过滤&了
+            url += "&";
+        }
+
+        Pattern r = Pattern.compile(URL_PATTERN);
+        Matcher m = r.matcher(url);
+        if (m.matches()) {
+            String[] result = new String[4];
+            result[0] = m.group(1); // protocol
+            result[1] = m.group(2); // module
+            result[2] = m.group(3); // path
+            result[3] = m.group(4); // params
+            return result;
+        }
+        return null;
     }
 
 
@@ -72,6 +106,12 @@ public class RouterRequest {
         }
     }
 
+
+    private RouterRequest addParam(String key, String value) {
+        params.put(key, value);
+        return this;
+    }
+
     public Context getContext() {
         return context;
     }
@@ -85,7 +125,7 @@ public class RouterRequest {
     }
 
     public String getHost() {
-        return host;
+        return module;
     }
 
     public String getPath() {
@@ -103,11 +143,13 @@ public class RouterRequest {
     @Override
     public String toString() {
         return "RouterRequest{" +
-                "url='" + url + '\'' +
+                "context=" + context +
+                ", url='" + url + '\'' +
                 ", protocol='" + protocol + '\'' +
-                ", host='" + host + '\'' +
+                ", module='" + module + '\'' +
                 ", path='" + path + '\'' +
                 ", params=" + params +
+                ", callback=" + callback +
                 '}';
     }
 }
