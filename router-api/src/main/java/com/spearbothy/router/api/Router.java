@@ -6,9 +6,6 @@ import com.spearbothy.router.api.interceptor.Interceptor;
 import com.spearbothy.router.api.interceptor.VerifyParamsInterceptor;
 import com.spearbothy.router.api.router.RouterClient;
 import com.spearbothy.router.api.router.RouterRequest;
-import com.spearbothy.router.api.util.RouterURLStreamHandlerFactory;
-
-import java.net.URL;
 
 /**
  * @author mahao
