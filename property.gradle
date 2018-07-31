@@ -8,6 +8,7 @@ deps.router_api="com.spearbothy:router-api:0.0.1"
 // support 依赖
 def support = [:]
 support.appcompat = "com.android.support:appcompat-v7:26.1.0"
+support.recyclerview = "com.android.support:recyclerview-v7:26.1.0"
 deps.support = support
 
 ext.deps = deps

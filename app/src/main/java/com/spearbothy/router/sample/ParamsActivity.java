@@ -1,10 +1,11 @@
-package com.spearbothy.router;
+package com.spearbothy.router.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.spearbothy.router.R;
 import com.spearbothy.router.annotation.Autowired;
 import com.spearbothy.router.annotation.Route;
 

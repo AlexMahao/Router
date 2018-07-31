@@ -2,21 +2,21 @@
 	"name":"app",
 	"pathList":[
 		{
-			"className":"com.spearbothy.router.MainActivity",
+			"className":"com.spearbothy.router.sample.MainActivity",
 			"desc":"首页",
 			"params":[],
 			"path":"router://app/main",
 			"version":"1.0.0"
 		},
 		{
-			"className":"com.spearbothy.router.LoginActivity",
+			"className":"com.spearbothy.router.sample.LoginActivity",
 			"desc":"登录页面",
 			"params":[],
 			"path":"router://app/login",
 			"version":"1.0.0"
 		},
 		{
-			"className":"com.spearbothy.router.ParamsActivity",
+			"className":"com.spearbothy.router.sample.ParamsActivity",
 			"desc":"演示参数传值页面",
 			"params":[
 				{

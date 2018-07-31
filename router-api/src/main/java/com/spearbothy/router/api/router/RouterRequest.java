@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 public class RouterRequest {
 
-    public static final String URL_PATTERN = "(router://)([a-zA-Z0-9]+)(/[a-zA-Z0-9]+)((\\?([a-zA-Z0-9]+=[a-zA-Z0-9]+&)*)?)";
+    public static final String URL_PATTERN = "(router)://([a-zA-Z0-9]+)(/[a-zA-Z0-9]+)((\\?([a-zA-Z0-9]+=[a-zA-Z0-9\\.]+&)*)?)";
 
     private Context context;
     private String url;
@@ -35,6 +35,21 @@ public class RouterRequest {
 
     public RouterRequest url(String url) {
         this.url = url;
+        return this;
+    }
+
+    public RouterRequest param(String key, String value) {
+        params.put(key, value);
+        return this;
+    }
+
+    public RouterRequest module(String module) {
+        this.module = module;
+        return this;
+    }
+
+    public RouterRequest path(String path) {
+        this.path = path;
         return this;
     }
 
@@ -65,9 +80,10 @@ public class RouterRequest {
                 protocol = result[0];
                 module = result[1];
                 path = result[2];
-                if (TextUtils.isEmpty(result[3])) {
+                if (!TextUtils.isEmpty(result[3])) {
                     loadUrlParams(result[3].substring(1), params);
                 }
+                return true;
             }
         }
         return false;
@@ -104,12 +120,6 @@ public class RouterRequest {
                 map.put(p[0], p[1]);
             }
         }
-    }
-
-
-    private RouterRequest addParam(String key, String value) {
-        params.put(key, value);
-        return this;
     }
 
     public Context getContext() {

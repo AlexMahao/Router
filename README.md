@@ -20,7 +20,6 @@
 
 ### TODO
 
-- 代码中调用时无需完整url构造，提供对应分解方法
 - 拦截器实现打断方法，阻拦链式调用执行
 
 ### 使用方式
@@ -197,14 +196,14 @@ public class LoginInterceptor implements Interceptor {
 	"name":"app",
 	"pathList":[
 		{
-			"className":"com.spearbothy.router.MainActivity",
+			"className":"com.spearbothy.router.sample.MainActivity",
 			"desc":"首页",
 			"params":[],
 			"path":"router://app/main",
 			"version":"1.0.0"
 		},
 		{
-			"className":"com.spearbothy.router.ParamsActivity",
+			"className":"com.spearbothy.router.sample.ParamsActivity",
 			"desc":"演示参数传值页面",
 			"params":[
 				{

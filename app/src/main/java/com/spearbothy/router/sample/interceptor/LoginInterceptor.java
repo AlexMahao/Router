@@ -1,9 +1,10 @@
-package com.spearbothy.router.interceptor;
+package com.spearbothy.router.sample.interceptor;
 
 import android.content.Context;
 import android.widget.Toast;
 
-import com.spearbothy.router.MainActivity;
+import com.spearbothy.router.App;
+import com.spearbothy.router.sample.MainActivity;
 import com.spearbothy.router.api.ResultCallback;
 import com.spearbothy.router.api.Router;
 import com.spearbothy.router.api.interceptor.Interceptor;
@@ -31,7 +32,7 @@ public class LoginInterceptor implements Interceptor {
         String needLogin = params.get("needLogin");
         if ("true".equals(needLogin)) {
             // 如果需要登录，但当前未登录，则跳转登录页面
-            if (!MainActivity.sIsLogin) {
+            if (!App.sIsLogin) {
                 // 启动新的路由
                 gotoLogin(request.getContext());
 

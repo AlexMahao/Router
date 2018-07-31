@@ -1,9 +1,10 @@
-package com.spearbothy.router;
+package com.spearbothy.router.sample;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.spearbothy.router.R;
 import com.spearbothy.router.annotation.Route;
 
 /**
