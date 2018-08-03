@@ -16,4 +16,6 @@ import java.lang.annotation.Target;
 public @interface Autowired {
 
     String desc() default "";
+
+    String value() default ""; // 默认值，如果设置默认值则在参数中可以
 }

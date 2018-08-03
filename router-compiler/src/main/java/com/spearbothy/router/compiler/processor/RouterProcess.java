@@ -147,7 +147,7 @@ public class RouterProcess extends AbstractProcessor {
             if (routeClass != null) {
                 loadIntoBuilder.addStatement("routeAddition = new $T($T.class, $S, $S)", routeAddition, routeClass.getClassName(), routeClass.getDesc(), routeClass.getVersion());
                 for (AutowiredField field : addition.getAutowiredFields()) {
-                    loadIntoBuilder.addStatement("routeAddition.addAutowiredField($S, $S)", field.getFieldName(), field.getFieldType());
+                    loadIntoBuilder.addStatement("routeAddition.addAutowiredField($S, $S, $S, $S)", field.getFieldName(), field.getFieldType(), field.getDesc(), field.getValue());
                 }
                 loadIntoBuilder.addStatement("root.put($S, routeAddition)", routeClass.getPath());
             }
@@ -256,9 +256,13 @@ public class RouterProcess extends AbstractProcessor {
                         addition.setQualifiedName(qualifiedName);
                         additionList.add(addition);
                     }
+
+                    Autowired autowired = variableElement.getAnnotation(Autowired.class);
                     AutowiredField field = new AutowiredField();
                     field.setFieldName(variableElement.getSimpleName().toString());
                     field.setFieldType(variableElement.asType().toString());
+                    field.setDesc(autowired.desc());
+                    field.setValue(autowired.value());
                     addition.addAutowiredField(field);
                 }
             }

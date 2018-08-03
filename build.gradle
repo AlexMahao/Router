@@ -7,10 +7,12 @@ buildscript {
         google()
         jcenter()
         maven{ url uri('repo') }
+        maven { url 'http://dev.soydai.me/nexus/content/groups/public/' }
     }
     dependencies {
         classpath deps.gradle
         classpath 'com.spearbothy:router-plugin:+'
+        classpath 'com.huli.android.plugin:gradle-tools:1.0.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

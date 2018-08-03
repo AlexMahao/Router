@@ -24,6 +24,7 @@ public class MainActivity extends BaseDebugListActivity {
         items.add(new Item("跳转测试module", ""));
         items.add(new Item("当前module跳转，以方法的方式", "带有参数"));
         items.add(new Item("当前module跳转，以方法的方式", "带有参数 , 监听activityResult"));
+        items.add(new Item("当前module跳转，以方法的方式", "未传参数，取默认值"));
     }
 
     @Override
@@ -87,6 +88,12 @@ public class MainActivity extends BaseDebugListActivity {
                         .path("/request_code")
                         .activityRequest(REQUEST_CODE)
                         .start();
+            case 5:
+                Router.with(this)
+                        .module("app")
+                        .path("/params")
+                        .start();
+                break;
             default:
                 break;
         }

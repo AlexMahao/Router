@@ -59,7 +59,14 @@ public class RouteAddition {
     }
 
     public void addAutowiredField(String fieldName, String fieldType) {
-        autowiredFields.add(new AutowiredField(fieldName, fieldType));
+        addAutowiredField(fieldName, fieldType, "", "");
+    }
+
+    public void addAutowiredField(String fieldName, String fieldType, String desc, String value) {
+        AutowiredField autowiredField = new AutowiredField(fieldName, fieldType);
+        autowiredField.setDesc(desc);
+        autowiredField.setValue(value);
+        autowiredFields.add(autowiredField);
     }
 
     @Override

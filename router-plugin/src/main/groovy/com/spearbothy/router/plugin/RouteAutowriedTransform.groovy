@@ -6,6 +6,7 @@ import com.spearbothy.router.annotation.Autowired
 import javassist.*
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Project
+import org.gradle.internal.impldep.com.esotericsoftware.minlog.Log
 
 import java.lang.reflect.Constructor
 
@@ -53,11 +54,6 @@ class RouteAutowriedTransform extends Transform {
     }
 
     @Override
-    boolean isCacheable() {
-        return true
-    }
-
-    @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         ClassPool classPool = ClassPool.getDefault()
         def classPath = []
@@ -85,7 +81,9 @@ class RouteAutowriedTransform extends Transform {
                 FileUtils.copyFile(jarInput.file, dest)
                 Logger.info("jar output:" + dest.absolutePath);
             }
+        }
 
+        transformInvocation.inputs.each { input->
             input.directoryInputs.each { dirInput ->
                 def outDir = transformInvocation.outputProvider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
 
@@ -124,7 +122,7 @@ class RouteAutowriedTransform extends Transform {
 
     boolean checkAndTransformClass(ClassPool classPool, File file, File dest) {
 
-        CtClass fragmentActivityCtClass = classPool.get("android.support.v4.app.FragmentActivity")
+//        CtClass fragmentActivityCtClass = classPool.get("android.support.v4.app.FragmentActivity")
         CtClass activityCtClass = classPool.get("android.app.Activity")
 
         classPool.importPackage("android.os")
@@ -141,7 +139,7 @@ class RouteAutowriedTransform extends Transform {
             Logger.error("Parsing class file ${file.getAbsolutePath()} fail.", throwable)
             return false
         }
-        if (ctClass.subclassOf(activityCtClass) || (fragmentActivityCtClass != null && ctClass.subclassOf(fragmentActivityCtClass))) {
+        if (ctClass.subclassOf(activityCtClass)) {
             Logger.info("route-save-params checking activity class:" + ctClass.getName())
             Logger.info("route-save-params inject " + ctClass.getName())
             handleActivitySaveState(mProject, ctClass, classPool)

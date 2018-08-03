@@ -27,8 +27,10 @@
 			"desc":"演示参数传值页面",
 			"params":[
 				{
+					"desc":"toast显示偏移值",
 					"fieldName":"index",
-					"fieldType":"int"
+					"fieldType":"int",
+					"value":"10"
 				}
 			],
 			"path":"router://app/params",

@@ -47,7 +47,12 @@ public class VerifyParamsInterceptor implements Interceptor {
             String fieldName = autowiredField.getFieldName();
             String paramsValue = params.get(fieldName);
             if (paramsValue == null) {
-                return null;
+                // 返回默认值
+                if (TextUtils.isEmpty(autowiredField.getValue())) {
+                    return null;
+                } else {
+                    paramsValue = autowiredField.getValue();
+                }
             }
             try {
                 switch (autowiredField.getFieldType()) {

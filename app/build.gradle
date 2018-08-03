@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'plugin.router'
+apply plugin: 'gradle-tools'
 
 android {
     compileSdkVersion config.compileSdkVersion
@@ -34,4 +35,5 @@ dependencies {
     implementation deps.support.appcompat
     implementation project(':test')
     implementation deps.support.recyclerview
+
 }

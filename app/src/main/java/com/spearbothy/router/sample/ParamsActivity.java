@@ -11,9 +11,9 @@ import com.spearbothy.router.annotation.Route;
 
 /**
  * 演示传值
- *  - 支持八种基本类型+String
- *  - 支持自动获取
- *  - 支持异常销毁和恢复
+ * - 支持八种基本类型+String
+ * - 支持自动获取
+ * - 支持异常销毁和恢复
  *
  * @author mahao
  * @date 2018/7/27 上午11:38
@@ -22,8 +22,8 @@ import com.spearbothy.router.annotation.Route;
 @Route(path = "/params", desc = "演示参数传值页面", version = "1.0.0")
 public class ParamsActivity extends AppCompatActivity {
 
-    @Autowired
-    public int index = 1;
+    @Autowired(value = "10", desc = "toast显示偏移值")
+    public int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

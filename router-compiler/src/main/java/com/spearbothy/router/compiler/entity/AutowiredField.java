@@ -12,6 +12,10 @@ public class AutowiredField {
 
     private String fieldType;
 
+    private String value;
+
+    private String desc;
+
     public String getFieldName() {
         return fieldName;
     }
@@ -28,11 +32,29 @@ public class AutowiredField {
         this.fieldType = fieldType;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
     @Override
     public String toString() {
         return "AutowiredField{" +
                 "fieldName='" + fieldName + '\'' +
                 ", fieldType='" + fieldType + '\'' +
+                ", value='" + value + '\'' +
+                ", desc='" + desc + '\'' +
                 '}';
     }
 }
