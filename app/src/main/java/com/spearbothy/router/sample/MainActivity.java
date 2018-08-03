@@ -1,5 +1,6 @@
 package com.spearbothy.router.sample;
 
+import android.content.Intent;
 import android.widget.Toast;
 
 import com.spearbothy.router.BaseDebugListActivity;
@@ -14,12 +15,15 @@ import java.util.List;
 @Route(path = "/main", desc = "首页", version = "1.0.0")
 public class MainActivity extends BaseDebugListActivity {
 
+    private static final int REQUEST_CODE = 3;
+
     @Override
     public void initListItem(List<Item> items) {
         items.add(new Item("当前Module跳转", "带有参数"));
         items.add(new Item("当前Module跳转", "带有参数  需要登录"));
         items.add(new Item("跳转测试module", ""));
         items.add(new Item("当前module跳转，以方法的方式", "带有参数"));
+        items.add(new Item("当前module跳转，以方法的方式", "带有参数 , 监听activityResult"));
     }
 
     @Override
@@ -77,8 +81,22 @@ public class MainActivity extends BaseDebugListActivity {
                         .param("index", "4")
                         .start();
                 break;
+            case 4:
+                Router.with(this)
+                        .module("app")
+                        .path("/request_code")
+                        .activityRequest(REQUEST_CODE)
+                        .start();
             default:
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            Toast.makeText(this, "activity 回调", Toast.LENGTH_SHORT).show();
         }
     }
 }

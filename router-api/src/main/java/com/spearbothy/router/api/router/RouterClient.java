@@ -90,6 +90,11 @@ public class RouterClient {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
         intent.putExtra("router_bundle", result.getBundle());
-        context.startActivity(intent);
+        if (request.getActivityRequestCode() != 0 && context instanceof Activity) {
+            ((Activity) context).startActivityForResult(intent, request.getActivityRequestCode());
+        } else {
+            context.startActivity(intent);
+        }
+
     }
 }

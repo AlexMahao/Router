@@ -2,6 +2,13 @@
 	"name":"app",
 	"pathList":[
 		{
+			"className":"com.spearbothy.router.sample.RequestCodeActivity",
+			"desc":"首页",
+			"params":[],
+			"path":"router://app/request_code",
+			"version":"1.0.0"
+		},
+		{
 			"className":"com.spearbothy.router.sample.MainActivity",
 			"desc":"首页",
 			"params":[],

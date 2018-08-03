@@ -18,5 +18,6 @@
         </activity>
         <activity android:name=".sample.ParamsActivity" />
         <activity android:name=".sample.LoginActivity" />
+        <activity android:name=".sample.RequestCodeActivity" />
     </application>
 </manifest>
