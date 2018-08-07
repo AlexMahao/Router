@@ -6,7 +6,9 @@ import android.text.TextUtils;
 import com.spearbothy.router.api.Constants;
 import com.spearbothy.router.api.ResultCallback;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,6 +29,7 @@ public class RouterRequest {
     private String module; // 模块名
     private String path;
     private Map<String, String> params = new HashMap<>();
+    private List<Integer> flags = new ArrayList<>();
     private ResultCallback callback;
     private int activityRequestCode;
 
@@ -57,6 +60,15 @@ public class RouterRequest {
     public RouterRequest activityRequest(int  activityRequestCode) {
         this.activityRequestCode = activityRequestCode;
         return this;
+    }
+
+    public RouterRequest addFlag(int flag) {
+        flags.add(flag);
+        return this;
+    }
+
+    public List<Integer> getFlags() {
+        return flags;
     }
 
     public void start() {
