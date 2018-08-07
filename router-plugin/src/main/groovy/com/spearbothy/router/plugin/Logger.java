@@ -12,6 +12,11 @@ public class Logger {
         System.out.println(msg);
     }
 
+
+    public static void infoLine(String msg) {
+        System.out.println("\n======================= " + msg + " =======================");
+    }
+
     public static void error(String msg) {
         System.err.println(msg);
     }

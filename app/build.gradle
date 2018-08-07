@@ -35,5 +35,6 @@ dependencies {
     implementation deps.support.appcompat
     implementation project(':test')
     implementation deps.support.recyclerview
+    implementation deps.fastjosn
 
 }

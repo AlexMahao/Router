@@ -4,7 +4,14 @@
 		{
 			"className":"com.spearbothy.test.MainActivity",
 			"desc":"module 测试页面",
-			"params":[],
+			"params":[
+				{
+					"desc":"",
+					"fieldName":"test",
+					"fieldType":"java.lang.String",
+					"value":"123"
+				}
+			],
 			"path":"router://test/main",
 			"version":"1.0.0"
 		}

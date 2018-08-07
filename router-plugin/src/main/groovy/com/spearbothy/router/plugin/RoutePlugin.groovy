@@ -39,11 +39,6 @@ class RoutePlugin implements Plugin<Project> {
         }
         // 注册Transform
         project.android.registerTransform(new RouteAutowriedTransform(project))
-
-        project.afterEvaluate {
-            // up-to-date
-            project.tasks.findByName("transformClassesWithRouteAutowiredForRelease").outputs.upToDateWhen { false }
-        }
     }
 
     /**

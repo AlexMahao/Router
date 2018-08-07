@@ -6,7 +6,6 @@ import com.spearbothy.router.annotation.Autowired
 import javassist.*
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Project
-import org.gradle.internal.impldep.com.esotericsoftware.minlog.Log
 
 import java.lang.reflect.Constructor
 
@@ -18,10 +17,6 @@ class RouteAutowriedTransform extends Transform {
         mProject = project
     }
 
-    /**
-     * transform的名称
-     * transformClassesWith + getName() + For + Debug或Release
-     */
     @Override
     String getName() {
         return "routeAutowired"
@@ -49,16 +44,19 @@ class RouteAutowriedTransform extends Transform {
 
     @Override
     boolean isIncremental() {
-        // 增量编译  instant run
+        // 暂时不支持增量编译
         return true
     }
 
     @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         ClassPool classPool = ClassPool.getDefault()
+
+        Logger.infoLine("Router注入参数")
+
         def classPath = []
         // 环境变量
-        Logger.info("bootClassPath:" + mProject.android.bootClasspath[0].toString())
+//        Logger.info("bootClassPath:" + mProject.android.bootClasspath[0].toString())
 
         classPool.appendClassPath(mProject.android.bootClasspath[0].toString())
 
@@ -66,12 +64,9 @@ class RouteAutowriedTransform extends Transform {
         Constructor constructor = jarClassPathClazz.getDeclaredConstructor(String.class)
         constructor.setAccessible(true)
 
+        Logger.infoLine("扫描所有jar包，不需要处理");
         transformInvocation.inputs.each { input ->
-            // 对jar包不做任何处理
             input.jarInputs.each { jarInput ->
-                // 对于jar包不做任何处理
-                Logger.info("jar not process =========================");
-                Logger.info("jar.name:" + jarInput.name + "jar input:" + jarInput.file.getAbsolutePath() + " jarInput.contentTypes" + jarInput.contentTypes + " jarInput.scope" + jarInput.scopes)
                 // 添加jar包，否则调用ctClass.subClass（）时会因找不到父类而返回false
                 ClassPath clazzPath = (ClassPath) constructor.newInstance(jarInput.file.absolutePath)
                 classPool.appendClassPath(clazzPath)
@@ -79,18 +74,19 @@ class RouteAutowriedTransform extends Transform {
 
                 def dest = transformInvocation.outputProvider.getContentLocation(jarInput.name, jarInput.contentTypes, jarInput.scopes, Format.JAR)
                 FileUtils.copyFile(jarInput.file, dest)
-                Logger.info("jar output:" + dest.absolutePath);
+
+                Logger.info("name:" + jarInput.name + " input:" + jarInput.file.getAbsolutePath() + " contentTypes" + jarInput.contentTypes + " scope" + jarInput.scopes + " output:" + dest.absolutePath)
             }
         }
 
-        transformInvocation.inputs.each { input->
+        Logger.infoLine("扫描所有class，注入代码");
+        transformInvocation.inputs.each { input ->
             input.directoryInputs.each { dirInput ->
                 def outDir = transformInvocation.outputProvider.getContentLocation(dirInput.name, dirInput.contentTypes, dirInput.scopes, Format.DIRECTORY)
-
                 // 获取到所有类
                 classPool.appendClassPath(dirInput.file.absolutePath)
                 int pathBitLen = dirInput.file.toString().length()
-                Logger.info("dirInput:" + dirInput.file.absolutePath);
+                Logger.info("class directory:" + dirInput.file.absolutePath);
                 def callback = { File it ->
                     // 截取前置目录
                     def path = "${it.toString().substring(pathBitLen)}"
@@ -140,8 +136,7 @@ class RouteAutowriedTransform extends Transform {
             return false
         }
         if (ctClass.subclassOf(activityCtClass)) {
-            Logger.info("route-save-params checking activity class:" + ctClass.getName())
-            Logger.info("route-save-params inject " + ctClass.getName())
+            Logger.infoLine("${ctClass.getName()}")
             handleActivitySaveState(mProject, ctClass, classPool)
             ctClass.writeFile(dest.absolutePath)
             ctClass.detach()
@@ -186,7 +181,7 @@ class RouteAutowriedTransform extends Transform {
             }
         } else {
             if (enableCtField == null) {
-                Logger.info("${ctClass.simpleName} save !")
+                Logger.info("${ctClass.simpleName} need save !")
                 // 原来没有需要自动恢复的变量，现在出现了需要自动恢复的变量
                 ctClass.addField(generateEnabledField(ctClass, classPool), CtField.Initializer.constant(true))
 
