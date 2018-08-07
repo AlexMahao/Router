@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 public class RouterRequest {
 
-    public static final String URL_PATTERN = "(router)://([a-zA-Z0-9_]+)(/[a-zA-Z0-9_]+)((\\?([a-zA-Z0-9]+=[.^&]+&)*)?)";
+    public static final String URL_PATTERN = "(router)://([a-zA-Z0-9_]+)(/[a-zA-Z0-9_]+)((\\?([a-zA-Z0-9]+=[^&]+&)*)?)";
 
     private Context context;
     private String url;
