@@ -58,15 +58,13 @@ android {
 }
 ```
 
-> 该框架依赖FastJson实现自定义对象的存储，需要添加fastjson依赖。
-
 #### 框架初始化
 
 在工程的`Application`的实现类的`onCreate()`中添加如下初始化代码
 
 ```java
 // 初始化
-Router.init(getApplicationContext());
+Router.init(getApplicationContext(), new AutowiredJsonAdapter());
 // 设置debug模式
 Router.setDebug(BuildConfig.DEBUG);
 ```
