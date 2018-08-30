@@ -27,6 +27,12 @@ public class RouterClient {
 
     private static RouterClient sClient = null;
 
+    /**
+     * 解析json
+     */
+    public AutowiredJsonAdapter autowiredJsonAdapter = null;
+
+
     public static RouterClient getInstance() {
         return sClient;
     }
@@ -76,6 +82,10 @@ public class RouterClient {
                 request.getCallback().onSuccess();
             }
             startActivity(request, response.getResult());
+        } else if (response.isCancel()) {
+            if (request.getCallback() != null) {
+                request.getCallback().onCancel(response);
+            }
         } else {
             if (request.getCallback() != null) {
                 request.getCallback().onError(response);
@@ -89,10 +99,11 @@ public class RouterClient {
         if (!(context instanceof Activity)) {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
-        for (int flag : request.getFlags()) {
+        for (int flag : request.getIntentFlags()) {
             intent.addFlags(flag);
         }
-        intent.putExtra("router_bundle", result.getBundle());
+
+        intent.replaceExtras(result.getBundle());
         if (request.getActivityRequestCode() != 0 && context instanceof Activity) {
             ((Activity) context).startActivityForResult(intent, request.getActivityRequestCode());
         } else {

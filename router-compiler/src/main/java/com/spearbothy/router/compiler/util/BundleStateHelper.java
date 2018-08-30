@@ -1,12 +1,11 @@
 package com.spearbothy.router.compiler.util;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 
 public class BundleStateHelper {
 
-    public static MethodSpec.Builder statementSaveValueIntoBundle(MethodSpec.Builder methodBuilder,String fieldName, String fieldType, String instance, String bundleName) {
+    public static MethodSpec.Builder statementSaveValueIntoBundle(MethodSpec.Builder methodBuilder, String fieldName, String fieldType, String instance, String bundleName) {
         String statement = null;
         switch (fieldType) {
             case "int":
@@ -33,11 +32,14 @@ public class BundleStateHelper {
             case "boolean":
                 statement = String.format("%s.putBoolean(%s, %s)", bundleName, "\"" + fieldName + "\"", getStatement(instance, fieldName));
                 break;
+            case "java.lang.String":
+                statement = String.format("%s.putString(%s, %s)", bundleName, "\"" + fieldName + "\"", getStatement(instance, fieldName));
+                break;
             default:
                 statement = String.format(
-                        "%s.putString(%s, %s)", bundleName, "\"" + fieldName + "\"", "$T.toJSONString(" + getStatement(instance, fieldName) + ")"
+                        "%s.putString(%s, %s)", bundleName, "\"" + fieldName + "\"", "$T.getAutowiredJsonAdapter().object2JSON(" + getStatement(instance, fieldName) + ")"
                 );
-                methodBuilder.addStatement(statement, JSON.class);
+                methodBuilder.addStatement(statement, Constants.API_ROUTER);
                 statement = null;
         }
         if (statement != null) {
@@ -74,15 +76,16 @@ public class BundleStateHelper {
             case "boolean":
                 statement = assignStatement(instance, fieldName, String.format("%s.getBoolean(%s)", bundleName, "\"" + fieldName + "\""));
                 break;
+            case "java.lang.String":
+                statement = assignStatement(instance, fieldName, String.format("%s.getString(%s)", bundleName, "\"" + fieldName + "\""));
+                break;
             default:
                 statement = assignStatement(instance, fieldName, String.format(
-                        "$T.<%s>parseObject(%s.getString(%s), new $T<%s>(){}.getType())",
-                        fieldType,
+                        "$T.getAutowiredJsonAdapter().JSON2Object(%s.getString(%s), $T.class)",
                         bundleName,
-                        "\"" + fieldName + "\"",
-                        fieldType
+                        "\"" + fieldName + "\""
                 ));
-                methodBuilder.addStatement(statement, JSON.class, TypeReference.class);
+                methodBuilder.addStatement(statement, Constants.API_ROUTER, ClassName.bestGuess(fieldType));
                 statement = null;
 
         }

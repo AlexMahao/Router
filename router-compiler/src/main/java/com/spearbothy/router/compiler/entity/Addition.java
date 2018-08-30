@@ -11,21 +11,24 @@ import java.util.List;
  * @email zziamahao@163.com
  */
 public class Addition {
-
-    // 全路径名
+    /**
+     * 注解所在的全路径类名
+     */
     private String qualifiedName;
-
-    // 被route注解的类信息
+    /**
+     * 被@Route注解的类以及相关信息
+     */
     private RouteClass routeClass;
-
-    // @autowird 注解的所有参数
+    /**
+     * 被@Autowired注解的字段的相关信息
+     */
     private List<AutowiredField> autowiredFields = new ArrayList<>();
-
 
     public String getPackageName() {
         if (qualifiedName == null || "".equals(qualifiedName)) {
             return "";
         }
+
         return qualifiedName.substring(0, qualifiedName.lastIndexOf("."));
     }
 

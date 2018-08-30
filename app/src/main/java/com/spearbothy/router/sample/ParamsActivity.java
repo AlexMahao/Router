@@ -17,7 +17,6 @@ import com.spearbothy.router.annotation.Route;
  *
  * @author mahao
  * @date 2018/7/27 上午11:38
- * @email zziamahao@163.com
  */
 @Route(path = "/params", desc = "演示参数传值页面", version = "1.0.0")
 public class ParamsActivity extends AppCompatActivity {

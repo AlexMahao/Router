@@ -17,5 +17,5 @@ public @interface Route {
 
     String desc();
 
-    String version(); // 支持版本
+    String version();
 }

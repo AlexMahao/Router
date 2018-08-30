@@ -91,6 +91,7 @@ public class RouterProcess extends AbstractProcessor {
             try {
                 generatorAutowiredFile(additionList);
                 generatorRouteFile(additionList);
+                // 生成清单文件
                 generatorMainfest(additionList);
             } catch (IOException e) {
                 logger.error(e);
@@ -100,6 +101,9 @@ public class RouterProcess extends AbstractProcessor {
         return false;
     }
 
+    /**
+     * 根据所有类的注解信息，生成清单文件，便于查阅
+     */
     private void generatorMainfest(List<Addition> additionList) {
         RouterDetail detail = new RouterDetail();
         detail.setName(moduleName);
@@ -124,7 +128,11 @@ public class RouterProcess extends AbstractProcessor {
         }
     }
 
+    /**
+     * 生成加载路由协议辅助类，目标路径pcom.huli.android.router.loader.RouterLoader$$XXX.java
+     */
     private void generatorRouteFile(List<Addition> additionList) throws IOException {
+
         ClassName InterfaceName = ClassName.get(Constants.LOADER_INTERFACE_PACKAGE, Constants.LOADER_INTERFACE_NAME);
 
         ClassName routeAddition = ClassName.get(Constants.ROUTER_PACKAGE + ".api.entity", "RouteAddition");
@@ -136,6 +144,8 @@ public class RouterProcess extends AbstractProcessor {
         );
 
         ParameterSpec parameterSpec = ParameterSpec.builder(routerMapType, "root").build();
+
+        // loadInto Method
         MethodSpec.Builder loadIntoBuilder = MethodSpec.methodBuilder(Constants.LOADER_INTERFACE_LOADINTO)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC)
@@ -147,7 +157,7 @@ public class RouterProcess extends AbstractProcessor {
             if (routeClass != null) {
                 loadIntoBuilder.addStatement("routeAddition = new $T($T.class, $S, $S)", routeAddition, routeClass.getClassName(), routeClass.getDesc(), routeClass.getVersion());
                 for (AutowiredField field : addition.getAutowiredFields()) {
-                    loadIntoBuilder.addStatement("routeAddition.addAutowiredField($S, $S, $S, $S)", field.getFieldName(), field.getFieldType(), field.getDesc(), field.getValue());
+                    loadIntoBuilder.addStatement("routeAddition.addAutowiredField($S, $S, $S, $S, $L)", field.getFieldName(), field.getFieldType(), field.getDesc(), field.getValue(),field.isEnable());
                 }
                 loadIntoBuilder.addStatement("root.put($S, routeAddition)", routeClass.getPath());
             }
@@ -155,6 +165,7 @@ public class RouterProcess extends AbstractProcessor {
 
         // 写入当前编译
         MethodSpec loadInto = loadIntoBuilder.build();
+
 
         MethodSpec getModuleName = MethodSpec.methodBuilder(Constants.LOADER_INTERFACE_GET_MODULE_NAME)
                 .addAnnotation(Override.class)
@@ -175,14 +186,16 @@ public class RouterProcess extends AbstractProcessor {
 
         javaFile.writeTo(filer);
 
+        // 添加logger信息
         logger.infoLine("生成类信息");
         logger.info(typeSpec.toString());
         logger.infoLine("");
         logger.info(moduleName + " success !!! ");
-
-
     }
 
+    /**
+     * 生成注解字段辅助类，格式如下：com.huli.android.router.test.XXXX$$RouteAutowired
+     */
     private void generatorAutowiredFile(List<Addition> additions) {
         for (Addition addition : additions) {
             if (addition.getAutowiredFields().isEmpty()) {
@@ -212,7 +225,10 @@ public class RouterProcess extends AbstractProcessor {
                     .addParameter(ClassName.bestGuess(addition.getQualifiedName()), "instance")
                     .addParameter(Constants.CLASS_BUNDLE, "outState");
             for (AutowiredField field : addition.getAutowiredFields()) {
-                BundleStateHelper.statementGetValueFromBundle(restoreBuilder, field.getFieldName(), field.getFieldType(), "instance", "outState");
+                if (field.isEnable()) {
+
+                    BundleStateHelper.statementGetValueFromBundle(restoreBuilder, field.getFieldName(), field.getFieldType(), "instance", "outState");
+                }
             }
             MethodSpec restoreMethod = restoreBuilder.build();
 
@@ -240,13 +256,17 @@ public class RouterProcess extends AbstractProcessor {
         }
     }
 
+    /**
+     * 加载@Autowired注解的类信息
+     * @param additions 保存的实体
+     * @param roundEnv 获取注解的对象
+     */
     private void initAutowird(List<Addition> additionList, RoundEnvironment roundEnv) {
         Set<? extends Element> autowiredElements = roundEnv.getElementsAnnotatedWith(Autowired.class);
         if (autowiredElements != null && !autowiredElements.isEmpty()) {
             for (Element element : autowiredElements) {
                 VariableElement variableElement = (VariableElement) element;
                 TypeElement typeElement = (TypeElement) variableElement.getEnclosingElement();
-                // 全路径类名
                 String qualifiedName = typeElement.getQualifiedName().toString();
                 if (checkIsSubClassOf(typeElement, Constants.CLASS_ACTIVITY, Constants.CLASS_FRAGMENT_ACTIVITY)) {
 
@@ -263,19 +283,27 @@ public class RouterProcess extends AbstractProcessor {
                     field.setFieldType(variableElement.asType().toString());
                     field.setDesc(autowired.desc());
                     field.setValue(autowired.value());
+                    field.setEnable(autowired.enable());
                     addition.addAutowiredField(field);
                 }
             }
         }
     }
 
+    /**
+     * 加载@Route注解的类信息
+     * @param additions 保存的实体
+     * @param roundEnv 获取注解的对象
+     */
     private void initRoute(List<Addition> additions, RoundEnvironment roundEnv) {
         Set<? extends Element> routeElements = roundEnv.getElementsAnnotatedWith(Route.class);
         if (routeElements != null && !routeElements.isEmpty()) {
             for (Element element : routeElements) {
-                // 检查element的类型
+                // 获取注解信息
                 TypeElement typeElement = (TypeElement) element;
                 Route route = typeElement.getAnnotation(Route.class);
+
+                // 查询该类是否已经创建并保存信息
                 String qualifiedName = typeElement.getQualifiedName().toString();
                 Addition addition = findAddition(additions, qualifiedName);
                 if (addition == null) {
@@ -283,17 +311,24 @@ public class RouterProcess extends AbstractProcessor {
                     addition.setQualifiedName(qualifiedName);
                     additions.add(addition);
                 }
+
+                // 保存route的信息
                 RouteClass routeClass = new RouteClass();
                 routeClass.setClassName(ClassName.get(typeElement));
                 routeClass.setDesc(route.desc());
                 routeClass.setPath(route.path());
                 routeClass.setVersion(route.version());
                 addition.setRouteClass(routeClass);
-
             }
         }
     }
 
+    /**
+     * 查询当前类的注解信息是否已存在
+     * @param additions 查询的集合
+     * @param qualifiedName 全路径类名
+     * @return 如果查询到，则返回对应信息，如果未查询到，则返回null
+     */
     public Addition findAddition(List<Addition> additions, String qualifiedName) {
         for (Addition addition : additions) {
             if (addition.getQualifiedName().equals(qualifiedName)) {
@@ -303,6 +338,12 @@ public class RouterProcess extends AbstractProcessor {
         return null;
     }
 
+    /**
+     * 检查一个类是否是一些类中其中一个的自雷
+     * @param element 需要检查的类
+     * @param superClasses 目标父类
+     * @return 如果是则返回true
+     */
     private boolean checkIsSubClassOf(Element element, String... superClasses) {
         Elements elementUtils = processingEnv.getElementUtils();
         Types typeUtils = processingEnv.getTypeUtils();

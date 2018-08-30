@@ -28,7 +28,7 @@ uploadArchives {
             repository(url: uri('../repo'))
             pom.groupId = 'com.spearbothy' // 组名
             pom.artifactId = 'router-plugin' // 插件名
-            pom.version = '0.1.0' // 版本号
+            pom.version = '0.0.1' // 版本号
         }
     }
 }

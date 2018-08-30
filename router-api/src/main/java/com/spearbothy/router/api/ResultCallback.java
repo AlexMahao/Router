@@ -8,13 +8,13 @@ import com.spearbothy.router.api.util.Logger;
  */
 
 public class ResultCallback {
-    public void onSuccess() {
-
-    }
+    public void onSuccess() {}
 
     public void onError(Response response) {
         if (Router.DEBUG) {
             Logger.error(response.toString());
         }
     }
+
+    public void onCancel(Response response) {}
 }

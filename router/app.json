@@ -2,6 +2,28 @@
 	"name":"app",
 	"pathList":[
 		{
+			"className":"com.spearbothy.router.sample.UserParamsActivity",
+			"desc":"测试所有类型数据",
+			"params":[
+				{
+					"desc":"",
+					"enable":true,
+					"fieldName":"user",
+					"fieldType":"com.spearbothy.router.sample.User",
+					"value":""
+				},
+				{
+					"desc":"",
+					"enable":false,
+					"fieldName":"index",
+					"fieldType":"int",
+					"value":""
+				}
+			],
+			"path":"router://app/user_params",
+			"version":"1.0.0"
+		},
+		{
 			"className":"com.spearbothy.router.sample.RequestCodeActivity",
 			"desc":"首页",
 			"params":[],
@@ -23,11 +45,34 @@
 			"version":"1.0.0"
 		},
 		{
+			"className":"com.spearbothy.router.sample.WebActivity",
+			"desc":"webView",
+			"params":[
+				{
+					"desc":"",
+					"enable":true,
+					"fieldName":"url",
+					"fieldType":"java.lang.String",
+					"value":""
+				},
+				{
+					"desc":"",
+					"enable":true,
+					"fieldName":"encode",
+					"fieldType":"boolean",
+					"value":""
+				}
+			],
+			"path":"router://app/webview",
+			"version":"1.0.0"
+		},
+		{
 			"className":"com.spearbothy.router.sample.ParamsActivity",
 			"desc":"演示参数传值页面",
 			"params":[
 				{
 					"desc":"toast显示偏移值",
+					"enable":true,
 					"fieldName":"index",
 					"fieldType":"int",
 					"value":"10"

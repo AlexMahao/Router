@@ -5,6 +5,9 @@ import android.text.TextUtils;
 
 import com.spearbothy.router.api.Constants;
 import com.spearbothy.router.api.ResultCallback;
+import com.spearbothy.router.api.util.Logger;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,13 +26,18 @@ public class RouterRequest {
 
     public static final String URL_PATTERN = "(router)://([a-zA-Z0-9_]+)(/[a-zA-Z0-9_]+)((\\?([a-zA-Z0-9]+=[^&]+&)*)?)";
 
+    // 保留参数的key
+    private static final String PARAMS_INTENT_FLAG = "intentFlag";
+    private static final String PARAMS_ACTIVITY_REQUEST_CODE = "activityReqCode";
+
+
     private Context context;
     private String url;
     private String protocol = Constants.ROUTER_PROTOCOL;
     private String module; // 模块名
     private String path;
     private Map<String, String> params = new HashMap<>();
-    private List<Integer> flags = new ArrayList<>();
+    private List<Integer> intentFlags = new ArrayList<>();
     private ResultCallback callback;
     private int activityRequestCode;
 
@@ -57,18 +65,18 @@ public class RouterRequest {
         return this;
     }
 
-    public RouterRequest activityRequest(int  activityRequestCode) {
+    public RouterRequest activityRequest(int activityRequestCode) {
         this.activityRequestCode = activityRequestCode;
         return this;
     }
 
-    public RouterRequest addFlag(int flag) {
-        flags.add(flag);
+    public RouterRequest addIntentFlag(int flag) {
+        intentFlags.add(flag);
         return this;
     }
 
-    public List<Integer> getFlags() {
-        return flags;
+    public List<Integer> getIntentFlags() {
+        return intentFlags;
     }
 
     public void start() {
@@ -79,6 +87,7 @@ public class RouterRequest {
         callback = resultCallback;
 
         if (initProtocol()) {
+            // 获取flag 参数
             RouterClient.process(this);
         } else {
             if (callback != null) {
@@ -99,7 +108,30 @@ public class RouterRequest {
                 module = result[1];
                 path = result[2];
                 if (!TextUtils.isEmpty(result[3])) {
-                    loadUrlParams(result[3].substring(1), params);
+                    loadUrlParams(result[3].substring(
+                            1), params);
+                }
+                String intentFlagsStr = params.get(PARAMS_INTENT_FLAG);
+                if (!TextUtils.isEmpty(intentFlagsStr)) {
+                    try {
+                        JSONArray array = new JSONArray(intentFlagsStr);
+                        for (int i = 0; i < array.length(); i++) {
+                            intentFlags.add(array.getInt(i));
+                        }
+                    } catch (Exception e) {
+                        Logger.error(PARAMS_INTENT_FLAG + " 传值不合法，需传入JSONArray：" + intentFlagsStr, e);
+                        return false;
+                    }
+                }
+
+                String activityReqCode = params.get(PARAMS_ACTIVITY_REQUEST_CODE);
+                if (!TextUtils.isEmpty(activityReqCode)) {
+                    try {
+                        activityRequestCode = Integer.parseInt(activityReqCode);
+                    } catch (NumberFormatException e) {
+                        Logger.error(PARAMS_ACTIVITY_REQUEST_CODE + " 传值不合法，需传入int：" + activityReqCode, e);
+                        return false;
+                    }
                 }
                 return true;
             }

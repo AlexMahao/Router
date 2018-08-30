@@ -3,17 +3,10 @@
   <groupId>com.spearbothy</groupId>
   <artifactId>router-plugin</artifactId>
   <versioning>
-    <release>0.1.0</release>
+    <release>0.0.1</release>
     <versions>
       <version>0.0.1</version>
-      <version>0.0.2</version>
-      <version>0.0.4</version>
-      <version>0.0.5</version>
-      <version>0.0.6</version>
-      <version>0.0.8</version>
-      <version>0.0.9</version>
-      <version>0.1.0</version>
     </versions>
-    <lastUpdated>20180807070131</lastUpdated>
+    <lastUpdated>20180830081229</lastUpdated>
   </versioning>
 </metadata>

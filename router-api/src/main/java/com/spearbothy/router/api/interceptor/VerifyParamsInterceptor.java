@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.spearbothy.router.api.entity.AutowiredField;
 import com.spearbothy.router.api.router.Response;
 import com.spearbothy.router.api.router.RouterRequest;
+import com.spearbothy.router.api.util.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -82,10 +83,17 @@ public class VerifyParamsInterceptor implements Interceptor {
                         bundle.putDouble(autowiredField.getFieldName(), Double.parseDouble(paramsValue));
                         break;
                     case "boolean":
-                        if (TextUtils.isEmpty(paramsValue) || !"true".equals(paramsValue) || !"false".equals(paramsValue)) {
+                        if (TextUtils.isEmpty(paramsValue) || (!"true".equals(paramsValue) && !"false".equals(paramsValue))) {
                             throw new NumberFormatException();
                         } else {
                             bundle.putBoolean(autowiredField.getFieldName(), Boolean.parseBoolean(paramsValue));
+                        }
+                        break;
+                    case "java.lang.String":
+                        if (!TextUtils.isEmpty(paramsValue)) {
+                            bundle.putString(autowiredField.getFieldName(), paramsValue);
+                        } else {
+                            throw new NumberFormatException();
                         }
                         break;
                     default:
@@ -95,9 +103,11 @@ public class VerifyParamsInterceptor implements Interceptor {
                         break;
                 }
             } catch (NumberFormatException e) {
+                Logger.error("协议参数类型不匹配：" + autowiredField.getFieldName() + "-" + autowiredField.getFieldType() + "-" + paramsValue, e);
                 // 格式不符合
                 return null;
             } catch (JSONException e) {
+                Logger.error("协议参数类型不匹配：" + autowiredField.getFieldName() + "-" + autowiredField.getFieldType() + "-" + paramsValue, e);
                 // 所传json不符合
                 return null;
             }

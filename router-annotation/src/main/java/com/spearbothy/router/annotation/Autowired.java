@@ -17,5 +17,14 @@ public @interface Autowired {
 
     String desc() default "";
 
-    String value() default ""; // 默认值，如果设置默认值则在参数中可以
+    /**
+     * @return 默认值，如果设置默认值则参数可以不传，会取默认值
+     */
+    String value() default "";
+
+    /**
+     * 适配历史代码
+     * @return 如果enble为false，则仅做参数校验和传入，不做获取和异常恢复
+     */
+    boolean enable() default true;
 }

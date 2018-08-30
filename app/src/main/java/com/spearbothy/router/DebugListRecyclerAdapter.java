@@ -22,26 +22,41 @@ public class DebugListRecyclerAdapter extends BaseRecyclerAdapter<BaseDebugListA
 
     @Override
     public int getLayoutId(int itemType) {
+        if (itemType == ITEM_TYPE_GROUP) {
+            return R.layout.item_debug_group;
+        }
         return R.layout.item_debug_list_desc;
     }
 
     @Override
-    protected void bindData(final BaseRecyclerAdapter.BaseViewHolder holder, final int position, int itemType) {
-        ((TextView) holder.getView(R.id.title)).setText(getData().get(position).getTitle());
-        String desc = getData().get(position).getDesc();
-        TextView descView = (TextView) holder.getView(R.id.desc);
-        if (TextUtils.isEmpty(desc)) {
-            descView.setVisibility(View.GONE);
-        } else {
-            descView.setVisibility(View.VISIBLE);
-            descView.setText(desc);
+    public int getItemType(int position) {
+        if (getData().get(position).getType() == BaseDebugListActivity.Item.GROUP) {
+            return ITEM_TYPE_GROUP;
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mOnItemClickListener.onItemClick(holder, position);
+        return super.getItemType(position);
+    }
+
+    @Override
+    protected void bindData(final BaseRecyclerAdapter.BaseViewHolder holder, final int position, int itemType) {
+        if (itemType == ITEM_TYPE_GROUP) {
+            ((TextView) holder.getView(R.id.title)).setText(getData().get(position).getTitle());
+        } else {
+            ((TextView) holder.getView(R.id.title)).setText(getData().get(position).getTitle());
+            String desc = getData().get(position).getDesc();
+            TextView descView = (TextView) holder.getView(R.id.desc);
+            if (TextUtils.isEmpty(desc)) {
+                descView.setVisibility(View.GONE);
+            } else {
+                descView.setVisibility(View.VISIBLE);
+                descView.setText(desc);
             }
-        });
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnItemClickListener.onItemClick(holder, position);
+                }
+            });
+        }
     }
 
     public interface OnItemClickListener {

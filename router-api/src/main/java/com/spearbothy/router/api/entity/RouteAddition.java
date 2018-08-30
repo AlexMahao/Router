@@ -12,19 +12,20 @@ import java.util.List;
  */
 
 public class RouteAddition {
+    // activity class
     private Class clazz;
-
+    // 描述
     private String desc;
-
+    // 版本
     private String version;
+    // 注入的字段
+    private List<AutowiredField> autowiredFields = new ArrayList<>();
 
     public RouteAddition(Class clazz, String desc, String version) {
         this.clazz = clazz;
         this.desc = desc;
         this.version = version;
     }
-
-    private List<AutowiredField> autowiredFields = new ArrayList<>();
 
     public Class getClazz() {
         return clazz;
@@ -59,10 +60,10 @@ public class RouteAddition {
     }
 
     public void addAutowiredField(String fieldName, String fieldType) {
-        addAutowiredField(fieldName, fieldType, "", "");
+        addAutowiredField(fieldName, fieldType, "", "", true);
     }
 
-    public void addAutowiredField(String fieldName, String fieldType, String desc, String value) {
+    public void addAutowiredField(String fieldName, String fieldType, String desc, String value, boolean enable) {
         AutowiredField autowiredField = new AutowiredField(fieldName, fieldType);
         autowiredField.setDesc(desc);
         autowiredField.setValue(value);

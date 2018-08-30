@@ -10,7 +10,6 @@ import org.gradle.api.Project
 import java.lang.reflect.Constructor
 
 class RouteAutowriedTransform extends Transform {
-
     Project mProject
 
     RouteAutowriedTransform(Project project) {
@@ -45,7 +44,7 @@ class RouteAutowriedTransform extends Transform {
     @Override
     boolean isIncremental() {
         // 暂时不支持增量编译
-        return true
+        return false
     }
 
     @Override
@@ -101,14 +100,8 @@ class RouteAutowriedTransform extends Transform {
                         }
                     }
                 }
-
-                if (dirInput.changedFiles == null || dirInput.changedFiles.isEmpty()) {
-                    // 没有文件改变
-                    dirInput.file.traverse(callback)
-                } else {
-                    // 有文件改变，只需要改变新的文件 instantrun
-                    dirInput.changedFiles.keySet().each(callback)
-                }
+                // 注入参数
+                dirInput.file.traverse(callback);
             }
         }
 
@@ -159,11 +152,6 @@ class RouteAutowriedTransform extends Transform {
             it.name == "onCreate" && it.parameterTypes == [bundleCtClass] as CtClass[]
         }
 
-        // 是否可用
-        CtField enableCtField = ctClass.declaredFields.find {
-            it.name == Constant.ENABLE_SAVE_STATE && it.getType().name == "boolean"
-        }
-
         def list = []
 
         ctClass.declaredFields.each { field ->
@@ -172,40 +160,29 @@ class RouteAutowriedTransform extends Transform {
                 list.add(field)
             }
         }
-        if (list.size() == 0) {
-            if (enableCtField != null) {
-                // 原来有参数，现在没有了，不需要再查找
-                ctClass.removeField(enableCtField)
-                ctClass.addField(generateEnabledField(ctClass, classPool), CtField.Initializer.constant(false))
-                Logger.info("${ctClass.simpleName} not save!")
+        if (!list.isEmpty()) {
+            Logger.info("${ctClass.simpleName} need save !")
+
+            if (saveCtMethod == null) {
+                Logger.info("${ctClass.simpleName}  add onSaveInstance method")
+                // 原来的 Activity 没有 saveInstanceState 方法
+                saveCtMethod = CtNewMethod.make(generateActivitySaveMethod(ctClass.name + Constant.GENERATED_FILE_SUFFIX), ctClass)
+                ctClass.addMethod(saveCtMethod)
+            } else {
+                Logger.info("${ctClass.simpleName}  onSaveInstance exist, insert before")
+                // 原来的 Activity 有 saveInstanceState 方法
+                saveCtMethod.insertBefore("${ctClass.name}${Constant.GENERATED_FILE_SUFFIX}.onSaveInstanceState(this, \$1);")
             }
-        } else {
-            if (enableCtField == null) {
-                Logger.info("${ctClass.simpleName} need save !")
-                // 原来没有需要自动恢复的变量，现在出现了需要自动恢复的变量
-                ctClass.addField(generateEnabledField(ctClass, classPool), CtField.Initializer.constant(true))
 
-                if (saveCtMethod == null) {
-                    Logger.info("${ctClass.simpleName}  add onSaveInstance method")
-                    // 原来的 Activity 没有 saveInstanceState 方法
-                    saveCtMethod = CtNewMethod.make(generateActivitySaveMethod(ctClass.name + Constant.GENERATED_FILE_SUFFIX), ctClass)
-                    ctClass.addMethod(saveCtMethod)
-                } else {
-                    Logger.info("${ctClass.simpleName}  onSaveInstance exist, insert before")
-                    // 原来的 Activity 有 saveInstanceState 方法
-                    saveCtMethod.insertBefore("${ctClass.name}${Constant.GENERATED_FILE_SUFFIX}.onSaveInstanceState(this, \$1);")
-                }
-
-                if (restoreCtMethod == null) {
-                    Logger.info("${ctClass.simpleName}  add onCreate method")
-                    // 原来的 Activity 没有 onCreate 方法
-                    restoreCtMethod = CtNewMethod.make(generateActivityRestoreMethod(ctClass.name + Constant.GENERATED_FILE_SUFFIX), ctClass)
-                    ctClass.addMethod(restoreCtMethod)
-                } else {
-                    Logger.info("${ctClass.simpleName}  onCreate exist, insert before")
-                    // 原来的 Activity 有 onCreate 方法
-                    restoreCtMethod.insertBefore("if ($Constant.ENABLE_SAVE_STATE){ if(\$1 != null) { ${ctClass.name}${Constant.GENERATED_FILE_SUFFIX}.onRestoreInstanceState(this, \$1);} else { ${ctClass.name}${Constant.GENERATED_FILE_SUFFIX}.onRestoreInstanceState(this, getIntent().getBundleExtra(\"router_bundle\"));}}")
-                }
+            if (restoreCtMethod == null) {
+                Logger.info("${ctClass.simpleName}  add onCreate method")
+                // 原来的 Activity 没有 onCreate 方法
+                restoreCtMethod = CtNewMethod.make(generateActivityRestoreMethod(ctClass.name + Constant.GENERATED_FILE_SUFFIX), ctClass)
+                ctClass.addMethod(restoreCtMethod)
+            } else {
+                Logger.info("${ctClass.simpleName}  onCreate exist, insert before")
+                // 原来的 Activity 有 onCreate 方法
+                restoreCtMethod.insertBefore("if(\$1 != null) { ${ctClass.name}${Constant.GENERATED_FILE_SUFFIX}.onRestoreInstanceState(this, \$1);} else { ${ctClass.name}${Constant.GENERATED_FILE_SUFFIX}.onRestoreInstanceState(this, getIntent().getExtras());}")
             }
         }
     }
@@ -220,13 +197,11 @@ class RouteAutowriedTransform extends Transform {
     // Activity onCreate 不存在的情况下创建 onCreate 方法
     String generateActivityRestoreMethod(String delegatedName) {
         return "protected void onCreate(Bundle savedInstanceState) {\n" +
-                "if ($Constant.ENABLE_SAVE_STATE) { " +
                 "\tif(saveInstance == null) { " +
-                "\t\t${delegatedName}.onRestoreInstanceState(this, getIntent().getBundleExtra(\"router_bundle\")); " +
+                "\t\t${delegatedName}.onRestoreInstanceState(this, getIntent().getExtras()); " +
                 "\t} else { " +
                 "\t\t${delegatedName}.onRestoreInstanceState(this, savedInstanceState); " +
-                "\t}" +
-                "}" + "\n" +
+                "\t}\n" +
                 "super.onCreate(savedInstanceState);\n" +
                 "}"
     }

@@ -40,4 +40,6 @@ public class Constants {
     public static final String GENERATED_FILE_SUFFIX = "$$RouteAutowired";
 
     public static final ClassName CLASS_BUNDLE = ClassName.get("android.os", "Bundle");
+
+    public static final ClassName API_ROUTER = ClassName.bestGuess(ROUTER_PACKAGE + ".api.Router");
 }

@@ -7,6 +7,7 @@
 			"params":[
 				{
 					"desc":"",
+					"enable":true,
 					"fieldName":"test",
 					"fieldType":"java.lang.String",
 					"value":"123"

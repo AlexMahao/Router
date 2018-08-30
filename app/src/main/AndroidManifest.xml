@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.spearbothy.router">
-
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -19,5 +18,7 @@
         <activity android:name=".sample.ParamsActivity" />
         <activity android:name=".sample.LoginActivity" />
         <activity android:name=".sample.RequestCodeActivity" />
+        <activity android:name=".sample.WebActivity" />
+        <activity android:name=".sample.UserParamsActivity" />
     </application>
 </manifest>

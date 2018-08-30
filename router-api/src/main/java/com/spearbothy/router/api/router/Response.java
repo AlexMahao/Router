@@ -21,13 +21,15 @@ public class Response {
 
     public static final int CODE_FAIL_PARAMS_NOT_VALID = -4;
 
+    // 取消此次请求
+    public static final int CODE_CANCEL = 1;
+
     private int errorCode;
 
     private String errorMessage;
 
     // 查询结果
     private ResponseResult result;
-
 
     public int getErrorCode() {
         return errorCode;
@@ -48,11 +50,16 @@ public class Response {
     public void setError(int errorCode, String errorMessage) {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
+
     }
 
     public void setSuccess(ResponseResult entity) {
         this.errorCode = CODE_SUCCESS;
         this.result = entity;
+    }
+
+    public void cancel() {
+        this.errorCode = CODE_CANCEL;
     }
 
     public String getErrorMessage() {
@@ -65,5 +72,9 @@ public class Response {
 
     public boolean isSuccess() {
         return errorCode == CODE_SUCCESS && result != null;
+    }
+
+    public boolean isCancel() {
+        return errorCode == CODE_CANCEL;
     }
 }

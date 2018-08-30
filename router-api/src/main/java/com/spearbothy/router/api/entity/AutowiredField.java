@@ -16,9 +16,19 @@ public class AutowiredField {
 
     private String desc;
 
+    private boolean enable;
+
     public AutowiredField(String fieldName, String fieldType) {
         this.fieldName = fieldName;
         this.fieldType = fieldType;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 
     public String getFieldName() {
@@ -60,6 +70,7 @@ public class AutowiredField {
                 ", fieldType='" + fieldType + '\'' +
                 ", value='" + value + '\'' +
                 ", desc='" + desc + '\'' +
+                ", enable=" + enable +
                 '}';
     }
 }

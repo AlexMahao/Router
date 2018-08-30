@@ -11,10 +11,7 @@ buildscript {
     }
     dependencies {
         classpath deps.gradle
-        classpath 'com.spearbothy:router-plugin:+'
-        classpath 'com.huli.android.plugin:gradle-tools:1.0.0'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'com.spearbothy:router-plugin:0.0.1'
     }
 }
 
